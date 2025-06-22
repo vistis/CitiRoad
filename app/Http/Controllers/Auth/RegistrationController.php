@@ -29,36 +29,36 @@ class RegistrationController extends Controller
     //Citizen
     public function storeCitizen(Request $request) {
         // Call create function
-        $citizen = app('App\Http\Controllers\Api\CitizenController')->create($request);
+        $citizen = app('App\Http\Controllers\CitizenController')->create($request);
 
         // Log citizen in
         Auth::guard('citizen')->login($citizen);
         $request->session()->regenerate();
 
-        return redirect(route('citizen/dashboard', absolute: false));
+        return redirect(route('citizen.dashboard', absolute: false));
     }
 
     // Officers
     public function storeOfficer(Request $request) {
         // Call create function
-        $officer = app('App\Http\Controllers\Api\OfficerController')->create($request);
+        $officer = app('App\Http\Controllers\OfficerController')->create($request);
 
         // Log officer in
         Auth::guard('officer')->login($officer);
         $request->session()->regenerate();
 
-        return redirect(route('officer/dashboard', absolute: false));
+        return redirect(route('officer.dashboard', absolute: false));
     }
 
     // Admins
     public function storeAdmin(Request $request) {
         // Call create function
-        $admin = app('App\Http\Controllers\Api\AdminController')->create($request);
+        $admin = app('App\Http\Controllers\AdminController')->create($request);
 
         // Log admin in
         Auth::guard('admin')->login($admin);
         $request->session()->regenerate();
 
-        return redirect(route('admin/dashboard', absolute: false));
+        return redirect(route('admin.dashboard', absolute: false));
     }
 }

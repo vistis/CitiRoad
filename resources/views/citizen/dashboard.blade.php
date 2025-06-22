@@ -27,8 +27,12 @@
                             <td class="border border-gray-300 p-2">{{ $user->status }}</td>
                         </tr>
                         <tr>
-                            <td class="border border-gray-300 p-2 font-bold">Name</td>
-                            <td class="border border-gray-300 p-2">{{ $user->first_name }} {{ $user->last_name }}</td>
+                            <td class="border border-gray-300 p-2 font-bold">First Name</td>
+                            <td class="border border-gray-300 p-2">{{ $user->first_name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 font-bold">Last Name</td>
+                            <td class="border border-gray-300 p-2">{{ $user->last_name }}</td>
                         </tr>
                         <tr>
                             <td class="border border-gray-300 p-2 font-bold">Email</td>
