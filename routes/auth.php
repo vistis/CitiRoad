@@ -9,19 +9,48 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Auth\RegistrationController;
 use App\Http\Controllers\Auth\SessionController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/register/citizen', [SessionController::class, 'registerCitizen'])
-    ->name('register.citizen');
+// Base URL
+// http://localhost:8000
 
-// Route::post('/officer/register', [SessionController::class, 'registerOfficer'])
-//     ->middleware(HandlePrecognitiveRequests::class);
+Route::middleware('guest')->group(function () {
+    // Citizen routes
+    Route::get('/citizen/register', [RegistrationController::class, 'createCitizen'])
+        ->name('citizen.register');
 
-// Route::post('/login', [SessionController::class, 'login'])
-//     ->middleware('guest');
+    Route::post('/citizen/register', [RegistrationController::class, 'storeCitizen']);
 
-// Route::post('/logout', [SessionController::class, 'logout']);
+    Route::get('/citizen/login', [SessionController::class, 'createCitizen'])
+        ->name('citizen.login');
+
+    Route::post('/citizen/login', [SessionController::class, 'storeCitizen']);
+
+    // Officer routes
+    Route::get('/officer/login', [SessionController::class, 'createOfficer'])
+        ->name('officer.login');
+
+    Route::post('/officer/login', [SessionController::class, 'storeOfficer']);
+
+    // Admin routes
+    Route::get('/admin/login', [SessionController::class, 'createAdmin'])
+        ->name('admin.login');
+
+    Route::post('/admin/login', [SessionController::class, 'storeAdmin']);
+});
+
+Route::middleware('auth')->group(function () {
+   // Citizen routes
+   Route::post('/citizen/logout', [SessionController::class, 'destroyCitizen']);
+
+   // Officer routes
+   Route::post('/officer/logout', [SessionController::class, 'destroyOfficer']);
+
+   // Citizen routes
+   Route::post('/admin/logout', [SessionController::class, 'destroyAdmin']);
+});
 
 //** END OF CUSTOM AUTH */
 
