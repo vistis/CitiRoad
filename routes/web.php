@@ -2,10 +2,15 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/citizen/dashboard', function() {
+    return view('citizen.dashboard', ['user' => Auth::user()]);
+})->middleware(['auth:citizen'])->name('citizen.dashboard');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

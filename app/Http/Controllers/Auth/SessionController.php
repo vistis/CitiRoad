@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class SessionController extends Controller
 {
@@ -31,7 +33,6 @@ class SessionController extends Controller
             'email' => ['string', 'email'],
             'phone_number' => ['string'],
             'password' => ['required', 'string'],
-            'remember' => ['boolean']
         ]);
 
         // Authenticate with email
@@ -59,8 +60,7 @@ class SessionController extends Controller
         // Request rules
         $request->validate([
             'id' => ['required', 'string'],
-            'password' => ['required', 'string'],
-            'remember' => ['boolean']
+            'password' => ['required', 'string']
         ]);
 
         // Authenticate
@@ -82,8 +82,7 @@ class SessionController extends Controller
         // Request rules
         $request->validate([
             'id' => ['required', 'string'],
-            'password' => ['required', 'string'],
-            'remember' => ['boolean']
+            'password' => ['required', 'string']
         ]);
 
         // Authenticate

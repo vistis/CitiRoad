@@ -18,7 +18,7 @@ class AdminController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:admins,email'],
             'phone_number' => ['required', 'string', 'max:16', 'unique:admins,phone_number'],
-            'password' => ['required', Password::defaults()],
+            'password' => ['required', 'confirmed', Password::defaults()],
             'profile_picture_path' => ['required', 'string'],
         ]);
         $admin = Admin::create([

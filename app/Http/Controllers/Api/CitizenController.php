@@ -18,7 +18,7 @@ class CitizenController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:citizens,email'],
             'phone_number' => ['required', 'string', 'max:16', 'unique:citizens,phone_number'],
-            'password' => ['required', Password::defaults()],
+            'password' => ['required', 'confirmed', Password::defaults()],
             'province_id' => ['required', 'numeric', 'exists:provinces,id'],
             'address' => ['required', 'string'],
             'date_of_birth' => ['required', 'date'],

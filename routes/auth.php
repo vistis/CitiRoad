@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 // Base URL
 // http://localhost:8000
 
+//** PUBLIC ROUTES */
 Route::middleware('guest')->group(function () {
     // Citizen routes
     Route::get('/citizen/register', [RegistrationController::class, 'createCitizen'])
@@ -41,15 +42,19 @@ Route::middleware('guest')->group(function () {
     Route::post('/admin/login', [SessionController::class, 'storeAdmin']);
 });
 
-Route::middleware('auth')->group(function () {
-   // Citizen routes
-   Route::post('/citizen/logout', [SessionController::class, 'destroyCitizen']);
+//** AUTHENTICATED ROUTES */
+Route::middleware('auth:sanctum')->group(function () {
+    // Citizen routes
+    Route::post('/citizen/logout', [SessionController::class, 'destroyCitizen'])
+        ->name('citizen.logout');
 
-   // Officer routes
-   Route::post('/officer/logout', [SessionController::class, 'destroyOfficer']);
+    // Officer routes
+    Route::post('/officer/logout', [SessionController::class, 'destroyOfficer'])
+        ->name('officer.logout');
 
-   // Citizen routes
-   Route::post('/admin/logout', [SessionController::class, 'destroyAdmin']);
+    // Citizen routes
+    Route::post('/admin/logout', [SessionController::class, 'destroyAdmin'])
+        ->name('admin.logout');
 });
 
 //** END OF CUSTOM AUTH */

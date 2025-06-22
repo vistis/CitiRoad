@@ -18,7 +18,7 @@ class OfficerController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:officers,email'],
             'phone_number' => ['required', 'string', 'max:16', 'unique:officers,phone_number'],
-            'password' => ['required', Password::defaults()],
+            'password' => ['required', 'confirmed', Password::defaults()],
             'role' => ['required', 'string', 'in:1,2'],
             'province_id' => ['required', 'numeric', 'exists:provinces,id'],
             'profile_picture_path' => ['required', 'string'],
