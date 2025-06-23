@@ -43,8 +43,8 @@
                             <td class="border border-gray-300 p-2">{{ Auth::user()->phone_number }}</td>
                         </tr>
                         <tr>
-                            <td class="border border-gray-300 p-2 font-bold">Province ID</td>
-                            <td class="border border-gray-300 p-2">{{ Auth::user()->province_id }}</td>
+                            <td class="border border-gray-300 p-2 font-bold">Province</td>
+                            <td class="border border-gray-300 p-2">{{ DB::table('provinces')->where('id', Auth::user()->province_id)->first()->name }}</td>
                         </tr>
                         <tr>
                             <td class="border border-gray-300 p-2 font-bold">Address</td>
@@ -65,16 +65,15 @@
                     </tbody>
                 </table>
 
-                <div class="container">
+                <div class="container mt-4">
                     <h1 class="mb-4">My Reports</h1>
 
-                    {{-- Search and Sort Form (Optional but good for dynamic lists) --}}
                     <form action="{{ route('citizen.dashboard') }}" method="GET" class="mb-4">
-                        <div class="row g-3 align-items-center">
-                            <div class="col-md-4">
-                                <input type="text" name="search" class="form-control" placeholder="Search by title..." value="{{ $searchQuery }}">
+                        <div class="row-auto">
+                            <div class="col-auto">
+                                <input type="text" name="search" class="form-control" placeholder="Search" value="{{ $search }}">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-auto">
                                 <select name="sort" class="form-select">
                                     <option value="title-asc" @if($sort == 'title-asc') selected @endif>Title (Ascending)</option>
                                     <option value="title-desc" @if($sort == 'title-desc') selected @endif>Title (Descending)</option>
@@ -84,26 +83,28 @@
                                     <option value="updated_at-desc" @if($sort == 'updated_at-desc') selected @endif>Updated At (Descending)</option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-auto">
                                 <select name="filter" class="form-select">
                                     <option value="Reviewing" @if($filter == 'Reviewing') selected @endif>Reviewing</option>
-                                    <option value="Resolved" @if($filter == 'Resolved') selected @endif>Resolved</option>
+                                    <option value="Investigating" @if($filter == 'Investigating') selected @endif>Investigating</option>
+                                    <option value="Resolving" @if($filter == 'Resolving') selected @endif>Resolving</option>
                                     <option value="Rejected" @if($filter == 'Rejected') selected @endif>Rejected</option>
+                                    <option value="Resolved" @if($filter == 'Resolved') selected @endif>Resolved</option>
                                 </select>
                             </div>
-                            <div class="col-md-2">
-                                <button type="submit" class="btn btn-primary w-100">Apply Filter</button>
+                            <div class="col-auto">
+                                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-100">Apply Filter</button>
                             </div>
                         </div>
                     </form>
 
-                    <p>Total Reports: {{ $reportsData['count'] }}</p>
+                    <p>Total Reports: {{ $reports['count'] }}</p>
 
-                    @if($reportsData['list']->isEmpty()) {{-- Check if the collection is empty --}}
+                    @if($reports['list']->isEmpty()) {{-- Check if the collection is empty --}}
                         <div class="alert alert-info">No reports found.</div>
                     @else
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover w-full">
+                            <table class="table border w-full mt-3">
                                 <thead class="table-light">
                                     <tr>
                                         <th>ID</th>
@@ -118,7 +119,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($reportsData['list'] as $report)
+                                    @foreach($reports['list'] as $report)
                                         <tr>
                                             <td>{{ $report->id }}</td>
                                             <td>{{ $report->title }}</td>
@@ -156,9 +157,9 @@
                         </div>
 
                         {{-- If you used ->paginate() in the controller, display links here --}}
-                        {{-- @if (isset($reportsData['pagination']))
+                        {{-- @if (isset($reports['pagination']))
                             <div class="d-flex justify-content-center">
-                                {!! $reportsData['pagination'] !!}
+                                {!! $reports['pagination'] !!}
                             </div>
                         @endif --}}
                     @endif

@@ -18,26 +18,22 @@ Route::get('/', function() {
 //** GUEST ROUTES */
 Route::middleware('guest')->group(function() {
     // Authentication
-    Route::post('/citizen/register', [TokenController::class, 'createCitizen']);
-    Route::post('/citizen/login', [TokenController::class, 'storeCitizen']);
-    Route::post('/officer/login', [TokenController::class, 'storeOfficer']);
-    Route::post('/admin/login', [TokenController::class, 'storeAdmin']);
+    Route::post('/register/citizen', [TokenController::class, 'createCitizen']);
+    Route::post('/login/citizen', [TokenController::class, 'storeCitizen']);
+    Route::post('/login/officer', [TokenController::class, 'storeOfficer']);
+    Route::post('/login/admin', [TokenController::class, 'storeAdmin']);
 });
 
 //** AUTHENTICATED ROUTES */
 Route::middleware('auth:sanctum')->group(function() {
+    // Logout
+    Route::post('/logout', [TokenController::class, 'destroy']);
+
     // View report
-    Route::get('/report/view', function(Request $request) {
+    Route::get('/report', function(Request $request) {
         $response = app('App\Http\Controllers\ReportController')->readOne($request);
 
         return $response;
-    });
-
-    // Report list
-    Route::get('/report', function(Request $request) {
-        $response = app('App\Http\Controllers\ReportController')->readList($request);
-
-        return response()->json($response, 200);
     });
 });
 
@@ -48,16 +44,20 @@ Route::middleware('auth:citizen-api')->group(function() {
         return $request->user();
     });
 
-    // Logout
-    Route::post('/citizen/logout', [TokenController::class, 'destroy']);
+    // Report list
+    Route::get('/report/list/citizen', function(Request $request) {
+        // Override request (show only reports of the user)
+        $request->citizen_id = $request->user()->id;
+
+        $response = app('App\Http\Controllers\ReportController')->readList($request);
+
+        return response()->json($response, 200);
+    });
 
     // Create report
     Route::post('/report/make', function(Request $request) {
-        $response = app('App\Http\Controllers\ReportController')->store($request);
-        return response()->json([
-            'message' => "Report received",
-            'report-info' => $response
-        ], 201);
+        $response = app('App\Http\Controllers\ReportController')->create($request);
+        return $response;
     });
 });
 
@@ -68,8 +68,24 @@ Route::middleware('auth:officer-api')->group(function() {
         return $request->user();
     });
 
-    // Logout
-    Route::post('/officer/logout', [TokenController::class, 'destroy']);
+    // Report statistics
+    Route::get('/report/stats/officer', function(Request $request) {
+        $response = app('App\Http\Controllers\ReportController')->stats($request);
+        return $response;
+    });
+
+    // Report list
+    Route::get('/report/list/officer', function(Request $request) {
+        // Get the province of the officer
+        $provinceName = DB::table('provinces')->where('id', $request->user()->province_id)->value('name');
+
+        // Apply key for filter
+        $request->filter = $provinceName;
+
+        $response = app('App\Http\Controllers\ReportController')->readList($request);
+
+        return response()->json($response, 200);
+    });
 
     // Update report status
     Route::post('/report/update', function(Request $request) {
@@ -88,8 +104,25 @@ Route::middleware('auth:admin-api')->group(function() {
         return $request->user();
     });
 
-    // Logout
-    Route::post('/admin/logout', [TokenController::class, 'destroy']);
+    // Report statistics
+    Route::get('/report/stats/admin', function(Request $request) {
+        $response = app('App\Http\Controllers\ReportController')->stats($request);
+        return $response;
+    });
+
+    // Report list
+    Route::get('/report/list/admin', function(Request $request) {
+        $response = app('App\Http\Controllers\ReportController')->readList($request);
+
+        return response()->json($response, 200);
+    });
+
+    // Delete report
+    Route::delete('/report/delete', function(Request $request) {
+        $response = app('App\Http\Controllers\ReportController')->delete($request);
+
+        return response()->json(['message' => "Report deleted",], 200);
+    });
 });
 
 // Route::middleware(['guest'])->post('/login', [TokenAuthenticationController::class, 'store']);

@@ -6,9 +6,45 @@ use Illuminate\Http\Request;
 use App\Models\Report;
 use Illuminate\Support\Facades\DB;
 use \Illuminate\Validation\ValidationException;
+use Illuminate\Database\Query\Builder;
 
 class ReportController extends Controller
 {
+    // Statistics
+    public function stats(Request $request) {
+        $total = DB::table('reports');
+
+        $ongoing = DB::table('reports')
+            ->where(function (Builder $query) {
+                $query->where('status', 'Reviewing')
+                    ->orWhere('status', 'Investigating')
+                    ->orWhere('status', 'Resolving');
+            });
+
+
+        $resolved = DB::table('reports')
+            ->where('status', 'Resolved');
+
+        // Only count within a second province for officers
+        if ($request->province_name ) {
+            $province = DB::table('provinces')->where('name', $request->province_name);
+            if ($province->exists()) {
+                // Get province ID
+                $province_id = $province->first()->id;
+
+                $total = $total->where('province_id', $province_id);
+                $ongoing = $ongoing->where('province_id', $province_id);
+                $resolved = $resolved->where('province_id', $province_id);
+            }
+        }
+
+        return [
+            'total' => $total->count(),
+            'ongoing' => $ongoing->count(),
+            'resolved' => $resolved->count()
+        ];
+    }
+
     // Create new report
     public function create(Request $request) {
         // Reqeust rules
@@ -22,9 +58,10 @@ class ReportController extends Controller
 
         // Validate account status
         if ($request->user()->status != 'Approved') {
-            throw ValidationException::withMessages([
-                'status' => 'Your account is not approved'
-            ]);
+            // throw ValidationException::withMessages([
+            //     'status' => 'Your account is not approved'
+            // ]);
+            return response()->json(['message' => 'Your account is not approved'], 403);
         }
 
         // Get user ID
@@ -44,7 +81,9 @@ class ReportController extends Controller
 
         $images = DB::table('report_images')->where('report_id', $report->id)->get();
 
-        return ['report' => $report, 'images' => $images];
+        return ['message' => "Report receivd",
+            'report' => $report,
+            'images' => $images];
     }
 
     // Get all info of a report
@@ -79,7 +118,7 @@ class ReportController extends Controller
         // Get images of report
         $images = DB::table('report_images')->where(['report_id' => $request->id])->get();
 
-        return ['report' => $report, 'images' => $images, 'count'];
+        return ['report' => $report, 'images' => $images];
     }
 
     // Report list
@@ -89,7 +128,7 @@ class ReportController extends Controller
 
         // Default sorting
         $sort = 'created_at';
-        $order = 'asc';
+        $order = 'desc';
 
         // Get sorting
         if ($request->sort) {
@@ -156,13 +195,15 @@ class ReportController extends Controller
                 'officer_first_name',
                 'officer_last_name'
             )
-            ->whereLike('title', $search)->orderBy($sort, $order)->get();
+            ->whereAny(['reports.title', 'provinces.name', 'reports.address', 'citizens.first_name', 'citizens.last_name'], 'like',  $search)
+            ->orderBy($sort, $order)
+            ->get();
 
         $response = $query;
 
         // If citizen is specified (for citizen profile page)
-        if ($request->id) {
-            $response = $response->where('citizen_id', $request->id);
+        if ($request->citizen_id) {
+            $response = $response->where('citizen_id', $request->citizen_id);
         }
 
         // Get filter
@@ -229,6 +270,6 @@ class ReportController extends Controller
         // Delete the report itself
         $report = Report::find($request->id)->delete();
 
-        return response()->json(['message' => 'Report deleted successfully'], 200);
+        return response()->noContent();
     }
 }
