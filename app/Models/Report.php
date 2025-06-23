@@ -10,12 +10,12 @@ class Report extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'title',
-        'status',
+        // 'status',
         'province_id',
         'address',
         'description',
         'citizen_id',
-        'updated_by',
-        'remark',
+        // 'updated_by',
+        // 'remark',
     ];
 }

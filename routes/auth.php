@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 // Base URL
 // http://localhost:8000
 
-//** PUBLIC ROUTES */
+//** GUEST ROUTES */
 Route::middleware('guest')->group(function () {
     // Dummy routes
     Route::get('/register', function() {})->name('register');
@@ -50,7 +50,7 @@ Route::middleware('guest')->group(function () {
 });
 
 //** AUTHENTICATED ROUTES */
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function() {
     // Citizen routes
     Route::post('/citizen/logout', [SessionController::class, 'destroyCitizen'])
         ->name('citizen.logout');
