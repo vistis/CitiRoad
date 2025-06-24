@@ -20,7 +20,7 @@ class AdminSeeder extends Seeder
             'email' => 'vkim1@paragoniu.edu.kh',
             'phone_number' => '0123456789',
             'password' => bcrypt('password'),
-            'profile_picture_path' => 'test.gif'
+            'profile_picture_path' => 'storage/admins/vis.png'
         ]);
     }
 }

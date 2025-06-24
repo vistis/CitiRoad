@@ -85,6 +85,7 @@
                             </div>
                             <div class="col-auto">
                                 <select name="filter" class="form-select">
+                                    <option value="" @if($filter == '') selected @endif>All</option>
                                     <option value="Reviewing" @if($filter == 'Reviewing') selected @endif>Reviewing</option>
                                     <option value="Investigating" @if($filter == 'Investigating') selected @endif>Investigating</option>
                                     <option value="Resolving" @if($filter == 'Resolving') selected @endif>Resolving</option>
@@ -98,9 +99,9 @@
                         </div>
                     </form>
 
-                    <p>Total Reports: {{ $reports['count'] }}</p>
+                    <p>Total Reports: {{ $count }}</p>
 
-                    @if($reports['list']->isEmpty()) {{-- Check if the collection is empty --}}
+                    @if($reports->isEmpty()) {{-- Check if the collection is empty --}}
                         <div class="alert alert-info">No reports found.</div>
                     @else
                         <div class="table-responsive">
@@ -119,7 +120,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($reports['list'] as $report)
+                                    @foreach($reports as $report)
                                         <tr>
                                             <td>{{ $report->id }}</td>
                                             <td>{{ $report->title }}</td>
@@ -132,7 +133,7 @@
                                                     {{ $report->status }}
                                                 </span>
                                             </td>
-                                            <td>{{ $report->province_name }}</td>
+                                            <td>{{ $report->province }}</td>
                                             <td>{{ $report->address }}</td>
                                             <td>{{ $report->citizen_first_name }} {{ $report->citizen_last_name }}</td>
                                             <td>{{ \Carbon\Carbon::parse($report->created_at)->format('M d, Y H:i A') }}</td>

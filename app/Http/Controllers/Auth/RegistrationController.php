@@ -29,10 +29,10 @@ class RegistrationController extends Controller
     //Citizen
     public function storeCitizen(Request $request) {
         // Call create function
-        $citizen = app('App\Http\Controllers\CitizenController')->create($request);
+        $response = app('App\Http\Controllers\CitizenController')->create($request);
 
         // Log citizen in
-        Auth::guard('citizen')->login($citizen);
+        Auth::guard('citizen')->login($response['account']);
         $request->session()->regenerate();
 
         return redirect(route('citizen.dashboard', absolute: false));
@@ -41,10 +41,10 @@ class RegistrationController extends Controller
     // Officers
     public function storeOfficer(Request $request) {
         // Call create function
-        $officer = app('App\Http\Controllers\OfficerController')->create($request);
+        $response = app('App\Http\Controllers\OfficerController')->create($request);
 
         // Log officer in
-        Auth::guard('officer')->login($officer);
+        Auth::guard('officer')->login($response['account']);
         $request->session()->regenerate();
 
         return redirect(route('officer.dashboard', absolute: false));
@@ -53,10 +53,10 @@ class RegistrationController extends Controller
     // Admins
     public function storeAdmin(Request $request) {
         // Call create function
-        $admin = app('App\Http\Controllers\AdminController')->create($request);
+        $response = app('App\Http\Controllers\AdminController')->create($request);
 
         // Log admin in
-        Auth::guard('admin')->login($admin);
+        Auth::guard('admin')->login($response['account']);
         $request->session()->regenerate();
 
         return redirect(route('admin.dashboard', absolute: false));

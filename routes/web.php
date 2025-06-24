@@ -42,10 +42,11 @@ Route::middleware('auth:citizen')->group(function () {
         // Override request (only show the user's reports)
         $request->citizen_id = $request->user()->id;
 
-        $reports = app('App\Http\Controllers\ReportController')->readList($request);
+        $response = app('App\Http\Controllers\ReportController')->readList($request);
 
         return view('citizen.dashboard', [
-            'reports' => $reports,
+            'count' => $response['count'],
+            'reports' => $response['reports'],
             'search' => $request->input('search', ''),
             'sort' => $request->input('sort', 'created_at-desc'),
             'filter' => $request->input('filter', '')

@@ -17,12 +17,12 @@ class SessionController extends Controller
 
     // Officer
     public function createOfficer() {
-        // return view('officer.login');
+        return view('officer.login');
     }
 
     // Admin
     public function createAdmin() {
-        // return view('admin.login');
+        return view('admin.login');
     }
 
     //** HANDLE LOGIN REQUEST */
@@ -30,8 +30,8 @@ class SessionController extends Controller
     public function storeCitizen(Request $request) {
         // Request rules
         $request->validate([
-            'email' => ['string', 'email'],
-            'phone_number' => ['string'],
+            'email' => ['string', 'email', 'not_in:deleted@account.shell'],
+            'phone_number' => ['string', 'not_in:0000000000'],
             'password' => ['required', 'string'],
         ]);
 

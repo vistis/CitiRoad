@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Report;
 use Illuminate\Support\Facades\DB;
-use \Illuminate\Validation\ValidationException;
+// use \Illuminate\Validation\ValidationException;
 use Illuminate\Database\Query\Builder;
 
 class ReportController extends Controller
@@ -14,34 +14,34 @@ class ReportController extends Controller
     public function stats(Request $request) {
         $total = DB::table('reports');
 
-        $ongoing = DB::table('reports')
+        $active = DB::table('reports')
             ->where(function (Builder $query) {
                 $query->where('status', 'Reviewing')
                     ->orWhere('status', 'Investigating')
                     ->orWhere('status', 'Resolving');
             });
 
-
         $resolved = DB::table('reports')
             ->where('status', 'Resolved');
 
         // Only count within a second province for officers
-        if ($request->province_name ) {
-            $province = DB::table('provinces')->where('name', $request->province_name);
+        if ($request->province ) {
+            $province = DB::table('provinces')->where('name', $request->province);
             if ($province->exists()) {
                 // Get province ID
                 $province_id = $province->first()->id;
 
                 $total = $total->where('province_id', $province_id);
-                $ongoing = $ongoing->where('province_id', $province_id);
+                $active = $active->where('province_id', $province_id);
                 $resolved = $resolved->where('province_id', $province_id);
             }
         }
 
         return [
             'total' => $total->count(),
-            'ongoing' => $ongoing->count(),
-            'resolved' => $resolved->count()
+            'active' => $active->count(),
+            'resolved' => $resolved->count(),
+            'code' => '200'
         ];
     }
 
@@ -50,7 +50,7 @@ class ReportController extends Controller
         // Reqeust rules
         $request->validate([
             'title' => ['required', 'string'],
-            'province_id' => ['required', 'numeric', 'exists:provinces,id'],
+            'province' => ['required', 'string', 'exists:provinces,name'],
             'address' => ['required', 'string'],
             'description' => ['required', 'string'],
             'image_path' => ['required', 'string']
@@ -58,19 +58,19 @@ class ReportController extends Controller
 
         // Validate account status
         if ($request->user()->status != 'Approved') {
-            // throw ValidationException::withMessages([
-            //     'status' => 'Your account is not approved'
-            // ]);
-            return response()->json(['message' => 'Your account is not approved'], 403);
+            return ['message' => 'Your account is not approved', 'code' => "403"];
         }
 
         // Get user ID
         $citizenID = $request->user()->id;
 
+        // Resolve province
+        $provinceID = DB::table('provinces')->where('name', $request->province)->value('id');
+
         // Create report
         $report = Report::create([
             'title' => $request->title,
-            'province_id' => $request->province_id,
+            'province_id' => $provinceID,
             'address' => $request->address,
             'description' => $request->description,
             'citizen_id' => $citizenID,
@@ -81,9 +81,12 @@ class ReportController extends Controller
 
         $images = DB::table('report_images')->where('report_id', $report->id)->get();
 
-        return ['message' => "Report receivd",
+        return [
+            'message' => "Report received",
             'report' => $report,
-            'images' => $images];
+            'images' => $images,
+            'code' => "200"
+        ];
     }
 
     // Get all info of a report
@@ -102,9 +105,9 @@ class ReportController extends Controller
                 'reports.status as status',
                 'reports.title as title',
                 'reports.description as description',
-                'provinces.name as province_name',
+                'provinces.name as province',
                 'reports.address as address',
-                'reports.created_at as created at',
+                'reports.created_at as created_at',
                 'reports.citizen_id',
                 'citizens.first_name as citizen_first_name',
                 'citizens.last_name as citizen_last_name',
@@ -118,7 +121,12 @@ class ReportController extends Controller
         // Get images of report
         $images = DB::table('report_images')->where(['report_id' => $request->id])->get();
 
-        return ['report' => $report, 'images' => $images];
+        return [
+            'message' => "Report found",
+            'report' => $report,
+            'images' => $images,
+            'code' => "200"
+        ];
     }
 
     // Report list
@@ -168,7 +176,7 @@ class ReportController extends Controller
                 'reports.id as id',
                 'reports.title as title',
                 'reports.status as status',
-                'provinces.name as province_name',
+                'provinces.name as province',
                 'reports.address as address',
                 'reports.created_at as created_at',
                 'reports.citizen_id as citizen_id',
@@ -184,7 +192,7 @@ class ReportController extends Controller
                 'id',
                 'title',
                 'status',
-                'province_name',
+                'province',
                 'address',
                 'created_at',
                 'citizen_id',
@@ -207,9 +215,9 @@ class ReportController extends Controller
         }
 
         // For officer (only show reports within their province)
-        if ($request->province_name) {
-            if (DB::table('provinces')->where('name', $request->province_Name)->exists()) {
-                $response = $response->where('province_name', $request->province_name);
+        if ($request->province) {
+            if (DB::table('provinces')->where('name', $request->province)->exists()) {
+                $response = $response->where('province', $request->province);
             }
         }
 
@@ -220,7 +228,11 @@ class ReportController extends Controller
             }
         }
 
-        return ['count' => $response->count(), 'list' => $response];
+        return [
+            'count' => $response->count(),
+            'reports' => $response,
+            'code' => "200"
+        ];
     }
 
     // Update status
@@ -239,18 +251,24 @@ class ReportController extends Controller
         // Find report
         $report = Report::where('id', $request->id)->first();
 
+        // Check officer province
+        $provinceID = $request->user()->province_id;
+
+        if ($provinceID != $report->province_id) {
+            return ['message' => 'Unauthorized', 'code' => "403"];
+        }
         if (!$role) {
             // User is not an officer
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return ['message' => 'Unauthorized', 'code' => "403"];
         }
         if ($role == 'Municipality Deputy' && $request->status == 'Resolved') {
             // Insufficent permission (only Municipality Heads can set status to Resolved)
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return ['message' => 'Unauthorized', 'code' => "403"];
         }
         if ($role == 'Municipality Deputy' && $report->status == 'Resolved'
             || $role == 'Municipality Deputy' && $report->status == 'Rejected') {
             // Insufficent permission (only Municipality Heads can update Resolved or Rejected status)
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return ['message' => 'Unauthorized', 'code' => "403"];
         }
 
         // Update report
@@ -264,18 +282,34 @@ class ReportController extends Controller
         $report = Report::find($request->id);
         $images = DB::table('report_images')->where('report_id', $report->id)->get();
 
-        return ['report' => $report, 'images' => $images];
+        return [
+            'message' => 'Report updated successfully',
+            'report' => $report,
+            'images' => $images,
+            'code' => '200'
+        ];
     }
 
     // Delete report
     public function delete(Request $request)
     {
+        // Find report
+        $report = Report::find($request->id);
+
+        // Failed to find report
+        if (!$report) {
+            return ['message' => "Report not found", 'code' => 404];
+        }
+
         // Delete associated images
-        DB::table('report_images')->where('report_id', $request->id)->delete();
+        DB::table('report_images')->where('report_id', $report->id)->delete();
 
         // Delete the report itself
-        $report = Report::find($request->id)->delete();
+        $report->delete();
 
-        return response()->noContent();
+        return [
+            'message' => 'Report deleted successfully',
+            'code' => '200'
+        ];
     }
 }

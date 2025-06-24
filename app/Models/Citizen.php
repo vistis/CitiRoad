@@ -23,8 +23,8 @@ class Citizen extends Authenticatable
         'province_id',
         'address',
         'date_of_birth',
-        'profile_picture_path',
         'gender',
+        'profile_picture_path',
     ];
     protected $hidden = [
         'password',

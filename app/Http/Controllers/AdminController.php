@@ -32,6 +32,10 @@ class AdminController extends Controller
             'profile_picture_path' => $request->profile_picture_path,
         ]);
 
-        return $admin;
+        return [
+            'message' => "Admin created",
+            'account' => $admin,
+            'code' => "201"
+        ];
     }
 }

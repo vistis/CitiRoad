@@ -63,9 +63,9 @@
 
         <!-- Province ID -->
         <div class="mt-4">
-            <x-input-label for="province_name" :value="__('Province')" />
-            <x-text-input id="province_name" class="block mt-1 w-full" type="text" name="province_name" :value="old('province_name')" required />
-            <x-input-error :messages="$errors->get('province_id')" class="mt-2" />
+            <x-input-label for="province" :value="__('Province')" />
+            <x-text-input id="province" class="block mt-1 w-full" type="text" name="province" :value="old('province')" required />
+            <x-input-error :messages="$errors->get('province')" class="mt-2" />
         </div>
 
         <!-- Address -->

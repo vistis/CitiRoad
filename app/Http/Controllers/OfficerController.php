@@ -11,6 +11,20 @@ use Illuminate\Support\Facades\DB;
 
 class OfficerController extends Controller
 {
+    // Statistics
+    public function stats() {
+        $total = Officer::count();
+        $heads = Officer::where('role', 'Municipality Head')->count();
+        $deputies = Officer::where('role', 'Municipality Deputy')->count();
+
+        return [
+            'total' => $total,
+            'heads' => $heads,
+            'deputies' => $deputies,
+            'code' => "200"
+        ];
+    }
+
     // Create a new officer type user
     public function create(Request $request) {
         $request->validate([
@@ -39,6 +53,38 @@ class OfficerController extends Controller
             'profile_picture_path' => $request->profile_picture_path,
         ]);
 
-        return $officer;
+        return [
+            'message' => "Officer created",
+            'account' => $officer,
+            'code' => "201"
+        ];
     }
+
+    // Delete an officer
+    public function delete(Request $request) {
+        // Request rule
+        $request->validate([
+            'id' => ['required', 'string', 'exists:officers,id'],
+        ]);
+
+        // Try to find the requested officer
+        $officer = Officer::where('id', $request->id)->first();
+
+        if (!$officer) {
+            // Officer does not exist
+            return [
+                'message' => "Officer not found",
+                'code' => "404"
+            ];
+        }
+
+        // Officer found, proceed with deletion
+        $officer->delete();
+
+        return [
+            'message' => "Officer deleted",
+            'code' => "200"
+        ];
+    }
+
 }
