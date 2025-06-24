@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\DB;
 
 class OfficerController extends Controller
 {
@@ -19,10 +20,13 @@ class OfficerController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:officers,email'],
             'phone_number' => ['required', 'string', 'max:16', 'unique:officers,phone_number'],
             'password' => ['required', 'confirmed', Password::defaults()],
-            'role' => ['required', 'string', 'in:1,2'],
-            'province_id' => ['required', 'numeric', 'exists:provinces,id'],
+            'role' => ['required', 'string', 'in:Municipality Head,Municipality Deputy'],
+            'province_name' => ['required', 'string', 'exists:provinces,name'],
             'profile_picture_path' => ['required', 'string'],
         ]);
+
+        $provinceID = DB::table('provinces')->where('name', $request->province_name)->value('id');
+
         $officer = Officer::create([
             'id' => $request->id,
             'first_name' => $request->first_name,
@@ -31,7 +35,7 @@ class OfficerController extends Controller
             'phone_number' => $request->phone_number,
             'password' => Hash::make($request->password),
             'role' => $request->role,
-            'province_id' => $request->province_id,
+            'province_id' => $provinceID,
             'profile_picture_path' => $request->profile_picture_path,
         ]);
 

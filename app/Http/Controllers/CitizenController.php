@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\DB;
 
 class CitizenController extends Controller
 {
@@ -25,6 +26,9 @@ class CitizenController extends Controller
             'profile_picture_path' => ['required', 'string'],
             'gender' => ['required', 'string', 'in:Male,Female,Prefer Not to Say'],
         ]);
+
+        $provinceID = DB::table('provinces')->where('name', $request->province_name)->value('id');
+
         $citizen = Citizen::create([
             'id' => $request->id,
             'first_name' => $request->first_name,
@@ -32,7 +36,7 @@ class CitizenController extends Controller
             'email' => $request->email,
             'phone_number' => $request->phone_number,
             'password' => Hash::make($request->password),
-            'province_id' => $request->province_id,
+            'province_id' => $provinceID,
             'address' => $request->address,
             'date_of_birth' => $request->date_of_birth,
             'profile_picture_path' => $request->profile_picture_path,

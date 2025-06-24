@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\QuoteController;
 use App\Http\Controllers\Api\TokenController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 // Base URL
 // http://localhost:8000/api
@@ -122,6 +123,13 @@ Route::middleware('auth:admin-api')->group(function() {
         $response = app('App\Http\Controllers\ReportController')->delete($request);
 
         return response()->json(['message' => "Report deleted",], 200);
+    });
+
+    // Issue officer account
+    Route::post('/admin/issue/officer', function(Request $request) {
+        $response = app('App\Http\Controllers\OfficerController')->create($request);
+
+        return response()->json($response, 200);
     });
 });
 

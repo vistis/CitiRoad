@@ -206,13 +206,17 @@ class ReportController extends Controller
             $response = $response->where('citizen_id', $request->citizen_id);
         }
 
+        // For officer (only show reports within their province)
+        if ($request->province_name) {
+            if (DB::table('provinces')->where('name', $request->province_Name)->exists()) {
+                $response = $response->where('province_name', $request->province_name);
+            }
+        }
+
         // Get filter
         if ($request->filter) {
             if ($request->filter == 'Reviewing' || $request->filter == 'Investigating' || $request->filter == 'Rejected' || $request->filter == 'Resolving' || $request->filter == 'Resolved') {
                 $response = $query->where('status', $request->filter);
-            }
-            if (DB::table('provinces')->where('name', $request->filter)->exists()) {
-                $response = $response->where('province_name', $request->filter);
             }
         }
 
@@ -233,7 +237,7 @@ class ReportController extends Controller
         $role = $request->user()->role;
 
         // Find report
-        $report = Report::find($request->id);
+        $report = Report::where('id', $request->id)->first();
 
         if (!$role) {
             // User is not an officer
@@ -250,10 +254,12 @@ class ReportController extends Controller
         }
 
         // Update report
-        $report->update(['status' => $request->status, 'remark' => $request->remark, 'updated_by' => $request->user()->id]);
+        Report::where('id', $request->id)->update(['status' => $request->status, 'remark' => $request->remark, 'updated_by' => $request->user()->id]);
 
         // Store proof of resolution
-        DB::table('report_images')->insert(['type' => 'After', 'image_path' => $request->image_path, 'report_id' => $request->id]);
+        if ($request->status == 'Resolved') {
+            DB::table('report_images')->insert(['type' => 'After', 'image_path' => $request->image_path, 'report_id' => $request->id]);
+        }
 
         $report = Report::find($request->id);
         $images = DB::table('report_images')->where('report_id', $report->id)->get();

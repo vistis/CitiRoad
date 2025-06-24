@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 // use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Middleware\AuthRedirect;
 
 // Base URL
 // http://localhost:8000
@@ -16,6 +17,18 @@ Route::get('/', function () {
 
 //** DUMMY ROUTES */
 Route::get('/dashboard', function () {})->name('dashboard');
+
+Route::get('/citizen', function() {
+    return redirect()->route('citizen.dashboard');
+})->name('citizen');
+
+Route::get('/officer', function() {
+    return redirect()->route('officer.dashboard');
+})->name('officer');
+
+Route::get('/admin', function() {
+    return redirect()->route('admin.dashboard');
+})->name('admin');
 
 //** AUTHENTICATED ROTUES */
 // Route::middleware('auth')->group(function() {

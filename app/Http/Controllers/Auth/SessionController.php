@@ -17,12 +17,12 @@ class SessionController extends Controller
 
     // Officer
     public function createOfficer() {
-        return view('officer.login');
+        // return view('officer.login');
     }
 
     // Admin
     public function createAdmin() {
-        return view('admin.login');
+        // return view('admin.login');
     }
 
     //** HANDLE LOGIN REQUEST */

@@ -21,6 +21,7 @@ class AdminController extends Controller
             'password' => ['required', 'confirmed', Password::defaults()],
             'profile_picture_path' => ['required', 'string'],
         ]);
+
         $admin = Admin::create([
             'id' => $request->id,
             'first_name' => $request->first_name,
