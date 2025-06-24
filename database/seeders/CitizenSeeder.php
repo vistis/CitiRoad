@@ -23,7 +23,7 @@ class CitizenSeeder extends Seeder
             'province_id' => 12,
             'address' => "Deleted",
             'date_of_birth' => "1990-01-01",
-            'gender' => 'prefer Not to Say',
+            'gender' => 'Prefer Not to Say',
             'profile_picture_path' => "storage/deleted.png"
         ]);
     }

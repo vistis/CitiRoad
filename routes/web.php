@@ -76,7 +76,7 @@ Route::middleware('auth:officer')->group(function () {
         $provinceName = DB::table('provinces')->where('id', $request->user()->province_id)->value('name');
 
         // Apply key for filter
-        $request->province_name = $provinceName;
+        $request->province = $provinceName;
 
         // Get report stats
         $stats = app('App\Http\Controllers\ReportController')->stats($request);

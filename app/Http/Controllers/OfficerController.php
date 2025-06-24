@@ -35,11 +35,11 @@ class OfficerController extends Controller
             'phone_number' => ['required', 'string', 'max:16', 'unique:officers,phone_number'],
             'password' => ['required', 'confirmed', Password::defaults()],
             'role' => ['required', 'string', 'in:Municipality Head,Municipality Deputy'],
-            'province_name' => ['required', 'string', 'exists:provinces,name'],
+            'province' => ['required', 'string', 'exists:provinces,name'],
             'profile_picture_path' => ['required', 'string'],
         ]);
 
-        $provinceID = DB::table('provinces')->where('name', $request->province_name)->value('id');
+        $provinceID = DB::table('provinces')->where('name', $request->province)->value('id');
 
         $officer = Officer::create([
             'id' => $request->id,
