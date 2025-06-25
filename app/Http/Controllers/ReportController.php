@@ -121,12 +121,31 @@ class ReportController extends Controller
         // Get images of report
         $images = DB::table('report_images')->where(['report_id' => $request->id])->get();
 
-        return [
+        $response = [
             'message' => "Report found",
             'report' => $report,
-            'images' => $images,
-            'code' => 200
+            'images' => $images
         ];
+
+        // Get bookmark status
+        if ($request->user()->role) { // For officers
+            if (DB::table('officer_bookmarks')->where(['officer_id' => $request->user()->id])->where(['report_id' => $request->id])->first()) {
+                $response['is_bookmarked'] = true;
+            }
+            else {
+                $response['is_bookmarked'] = false;
+            }
+        }
+        else if (!$request->user()->address) { // For admins
+            if (DB::table('admin_bookmarks')->where(['admin_id' => $request->user()->id])->where(['report_id' => $request->id])->first()) {
+                $response['is_bookmarked'] = true;
+            }
+            else {
+                $response['is_bookmarked'] = false;
+            }
+        }
+
+        return $response;
     }
 
     // Report list
@@ -360,11 +379,11 @@ class ReportController extends Controller
     public function bookmark(Request $request) {
         // Request rule
         $request->validate([
-            'report_id' => ["required", "integer", "exists:reports,id"]
+            'id' => ["required", "integer", "exists:reports,id"]
         ]);
 
         // Find the report
-        $report = Report::find($request->report_id);
+        $report = Report::find($request->id);
 
         // Failed to find report
         if (!$report) {

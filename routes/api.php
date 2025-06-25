@@ -79,11 +79,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
         $response = app('App\Http\Controllers\ReportController')->readOne($request);
 
-        return response()->json([
-            'message' => $response['message'],
-            'report' => $response['report'],
-            'images' => $response['images']
-        ], $response['code']);
+        return response()->json($response, 200);
     });
 
     // Add report to bookmark
