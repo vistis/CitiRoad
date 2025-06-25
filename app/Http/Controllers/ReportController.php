@@ -149,7 +149,7 @@ class ReportController extends Controller
     }
 
     // Report list
-    public function readList(Request $request) {
+    public function readAll(Request $request) {
         // Get search term for report title
         $search = "%" . $request->search . "%";
 

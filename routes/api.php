@@ -59,7 +59,7 @@ Route::middleware('auth:sanctum')->group(function() {
             }
         }
 
-        $response = app('App\Http\Controllers\ReportController')->readList($request);
+        $response = app('App\Http\Controllers\ReportController')->readAll($request);
 
         return response()->json([
             'count' => $response['count'],
@@ -90,6 +90,36 @@ Route::middleware('auth:sanctum')->group(function() {
             'message' => $response['message'],
         ], $response['code']);
     });
+
+    // View a citizen's information
+    Route::get('/citizen', function(Request $request) {
+        $response = app('App\Http\Controllers\CitizenController')->readOne($request);
+
+        return response()->json([
+            'message' => $response['message'],
+            'account' => $response['account']
+        ], $response['code']);
+    });
+
+    // View an officer's information
+    Route::get('/officer', function(Request $request) {
+        $response = app('App\Http\Controllers\OfficerController')->readOne($request);
+
+        return response()->json([
+            'message' => $response['message'],
+            'account' => $response['account']
+        ], $response['code']);
+    });
+
+    // Officer list
+    Route::get('/officers', function(Request $request) {
+        $response = app('App\Http\Controllers\OfficerController')->readAll($request);
+
+        return response()->json([
+            'officers' => $response['officers']
+        ], $response['code']);
+    });
+
 });
 
 //** CITIZEN ROTUES */
@@ -113,8 +143,30 @@ Route::middleware('auth:citizen-api')->group(function() {
     });
 
     // Delete own account
-    Route::post('/user/delete', function(Request $request) {
-        $response = app('App\Http\Controllers\CitizenController')->delete($request->user()->id);
+    Route::post('/account/delete', function(Request $request) {
+        // Override request
+        $request['id'] = $request->user()->id;
+
+        $response = app('App\Http\Controllers\CitizenController')->delete($request);
+
+        return response()->json([
+            'message' => $response['message']
+        ], $response['code']);
+    });
+
+    // Update own account
+    Route::post('/account/update', function(Request $request) {
+        $response = app('App\Http\Controllers\CitizenController')->update($request);
+
+        return response()->json([
+            'message' => $response['message'],
+            'account' => $response['account']
+        ], $response['code']);
+    });
+
+    // Reset password
+    Route::post('/account/reset', function(Request $request) {
+        $response = app('App\Http\Controllers\CitizenController')->resetPassword($request);
 
         return response()->json([
             'message' => $response['message']
@@ -186,6 +238,16 @@ Route::middleware('auth:admin-api')->group(function() {
         ], $response['code']);
     });
 
+    // Citizen list
+    Route::get('/citizens', function() {
+        $response = app('App\Http\Controllers\CitizenController')->readAll();
+
+        return response()->json([
+            'pending' => $response['pending'],
+            'other' => $response['other']
+        ], $response['code']);
+    });
+
     // Approve citizen
     Route::post('/approve/citizen', function(Request $request) {
         $response = app('App\Http\Controllers\CitizenController')->approve($request);
@@ -232,6 +294,26 @@ Route::middleware('auth:admin-api')->group(function() {
         ], $response['code']);
     });
 
+    // Update officer account
+    Route::post('/officer/update', function(Request $request) {
+        $response = app('App\Http\Controllers\OfficerController')->update($request);
+
+        return response()->json([
+            'message' => $response['message'],
+            'account' => $response['account']
+        ], $response['code']);
+    });
+
+    // Update own account
+    Route::post('/admin/update', function(Request $request) {
+        $response = app('App\Http\Controllers\AdminController')->update($request);
+
+        return response()->json([
+            'message' => $response['message'],
+            'account' => $response['account']
+        ], $response['code']);
+    });
+
     // Delete citizen [DANGER]
     Route::post('/delete/citizen', function(Request $request) {
         $response = app('App\Http\Controllers\CitizenController')->delete($request);
@@ -249,6 +331,26 @@ Route::middleware('auth:admin-api')->group(function() {
             'message' => $response['message']
         ], $response['code']);
     });
+
+    // View specific admin
+    Route::get('/admin', function(Request $request) {
+        $response = app('App\Http\Controllers\AdminController')->readOne($request);
+
+        return response()->json([
+            'message' => $response['message'],
+            'account' => $response['account']
+        ], $response['code']);
+    });
+
+    // Admin list
+    Route::get('/admins', function() {
+        $response = app('App\Http\Controllers\AdminController')->readAll();
+
+        return response()->json([
+            'admins' => $response['admins']
+        ], $response['code']);
+    });
+
 });
 
 // Route::middleware(['guest'])->post('/login', [TokenAuthenticationController::class, 'store']);

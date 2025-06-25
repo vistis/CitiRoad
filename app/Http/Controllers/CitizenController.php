@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Query\Builder;
 
 class CitizenController extends Controller
 {
@@ -61,6 +62,97 @@ class CitizenController extends Controller
             'message' => "Citizen created",
             'account' => $citizen,
             'code' => "201"
+        ];
+    }
+
+    // Get information on a citizen
+    public function readOne(Request $request) {
+        // Request rule
+        $request->validate([
+            'id' => ['required', 'string', 'exists:citizens,id'],
+        ]);
+
+        if ($request->user()->status && $request->id != $request->user()->id) {
+            // If the user is a citizen, do not allow to read other users
+            return ['message' => "Unauthorized", 'code' => 403];
+        }
+
+        // Try to find the citizen
+        $citizen = Citizen::join('provinces', 'citizens.province_id', '=', 'provinces.id')->where('citizens.id', $request->id)->first();
+
+        if (!$citizen) {
+            // Not found
+            return ['message' => "Citizen not found", 'code' => 404];
+        }
+
+        return [
+            'message' => 'Citizen found',
+            'account' => $citizen,
+            'code' => 200
+        ];
+    }
+
+    // Get citizen list
+    public function readAll() {
+        // Get citizens
+        $pending = Citizen::join('provinces', 'citizens.province_id', '=', 'provinces.id')->where('status', "Pending")->get();
+        $other = Citizen::join('provinces', 'citizens.province_id', '=', 'provinces.id')->whereNot('status', "Pending")->get();
+
+        return [
+            'pending' => $pending,
+            'other' => $other,
+            'code' => 200,
+        ];
+    }
+
+    // Update citizen
+    public function update(Request $request) {
+        // Request rules
+        $request->validate([
+            'email' => ['email', 'unique:citizens,email'],
+            'phone_number' => ['string', 'max:16', 'unique:citizens,phone_number'],
+            'province' => ['string', 'exists:provinces,name'],
+            'address' => ['string'],
+            'password' => ['string', 'confirmed', Password::defaults()]
+        ]);
+
+        // Resolve province ID
+        $provinceID = DB::table('provinces')->where('name', $request->province)->id;
+
+        // Update the information
+        $citizen = Citizen::where('id', $request->id)->update([
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+            'province_id' => $provinceID,
+            'address' => $request->address,
+            'password' => Hash::make($request->password)
+        ]);
+
+        return [
+            'message' => "Account information updated",
+            'account' => $citizen,
+            'code' => 200,
+        ];
+    }
+
+    // Reset password
+    public function resetPassword(Request $request) {
+        // Request rule
+        $request->validate([
+            'id' => ['required', 'string', 'exists:citizens,id'],
+            'password' => ['required', 'string', 'confirmed', Password::defaults()]
+        ]);
+
+        // Get account
+        $citizen = Citizen::find($request->user()->id);
+
+        // Update the password
+        $citizen->password = Hash::make($request->password);
+        $citizen->save();
+
+        return [
+            'message' => "Password changed",
+            'code' => 200,
         ];
     }
 
