@@ -41,7 +41,7 @@ class ReportController extends Controller
             'total' => $total->count(),
             'active' => $active->count(),
             'resolved' => $resolved->count(),
-            'code' => '200'
+            'code' => 200
         ];
     }
 
@@ -85,7 +85,7 @@ class ReportController extends Controller
             'message' => "Report received",
             'report' => $report,
             'images' => $images,
-            'code' => "200"
+            'code' => 200
         ];
     }
 
@@ -125,7 +125,7 @@ class ReportController extends Controller
             'message' => "Report found",
             'report' => $report,
             'images' => $images,
-            'code' => "200"
+            'code' => 200
         ];
     }
 
@@ -186,7 +186,7 @@ class ReportController extends Controller
                 'reports.updated_by',
                 'officers.first_name as officer_first_name',
                 'officers.last_name as officer_last_name',
-                DB::raw('MIN(report_images.image_path) as image_path') // Select only one picture for preview
+                DB::raw('MIN(report_images.image_path) as image_path'), // Select only one picture for preview
             )
             ->groupBy(
                 'id',
@@ -207,31 +207,74 @@ class ReportController extends Controller
             ->orderBy($sort, $order)
             ->get();
 
-        $response = $query;
+        // Get the current user's ID
+        $userId = $request->user()->id;
 
-        // If citizen is specified (for citizen profile page)
-        if ($request->citizen_id) {
-            $response = $response->where('citizen_id', $request->citizen_id);
+        // Fetch bookmark of current user if not a citizen
+        if (!$request->user()->status) {
+            // Collect all report IDs
+            $reportIds = $query->pluck('id')->toArray();
+
+            // Fetch bookmarks for officer
+            if ($request->user()->role) {
+                $officerBookmarks = DB::table('officer_bookmarks')
+                    ->whereIn('report_id', $reportIds)
+                    ->where('officer_id', $userId)
+                    ->pluck('report_id')
+                    ->toArray();
+
+                foreach ($query as $report) {
+                    // Check if the report ID exists in the officer array
+                    if (in_array($report->id, $officerBookmarks)) {
+                        $report->is_bookmarked = true;
+                    } else {
+                        $report->is_bookmarked = false;
+                    }
+                }
+            }
+            // Fetch bookmarks for admin
+            else {
+                $adminBookmarks = DB::table('admin_bookmarks')
+                    ->whereIn('report_id', $reportIds)
+                    ->where('admin_id', $userId)
+                    ->pluck('report_id')
+                    ->toArray();
+
+                foreach ($query as $report) {
+                    // Check if the report ID exists in the admin array
+                    if (in_array($report->id, $adminBookmarks)) {
+                        $report->is_bookmarked = true;
+                    } else {
+                        $report->is_bookmarked = false;
+                    }
+                }
+            }
         }
 
-        // For officer (only show reports within their province)
-        if ($request->province) {
-            if (DB::table('provinces')->where('name', $request->province)->exists()) {
-                $response = $response->where('province', $request->province);
-            }
+        // If the request comes from a citizen; only show their own reports
+        if ($request->user()->status) {
+            $query = $query->where('citizen_id', $userId);
+        }
+
+        // If the request comes from an officer; only show reports within their province
+        else if ($request->user()->role) {
+            $query = $query->where('province', DB::table('provinces')->where('id', $request->user()->province_id)->first()->name);
         }
 
         // Get filter
         if ($request->filter) {
             if ($request->filter == 'Reviewing' || $request->filter == 'Investigating' || $request->filter == 'Rejected' || $request->filter == 'Resolving' || $request->filter == 'Resolved') {
-                $response = $query->where('status', $request->filter);
+                $query = $query->where('status', $request->filter);
+            }
+            else if ($request->filter == 'Bookmarked') {
+                $query = $query->where('is_bookmarked', true);
             }
         }
 
         return [
-            'count' => $response->count(),
-            'reports' => $response,
-            'code' => "200"
+            'count' => $query->count(),
+            'reports' => $query,
+            'code' => 200,
         ];
     }
 
@@ -255,20 +298,20 @@ class ReportController extends Controller
         $provinceID = $request->user()->province_id;
 
         if ($provinceID != $report->province_id) {
-            return ['message' => 'Unauthorized', 'code' => "403"];
+            return ['message' => 'Unauthorized', 'code' => 403];
         }
         if (!$role) {
             // User is not an officer
-            return ['message' => 'Unauthorized', 'code' => "403"];
+            return ['message' => 'Unauthorized', 'code' => 403];
         }
         if ($role == 'Municipality Deputy' && $request->status == 'Resolved') {
             // Insufficent permission (only Municipality Heads can set status to Resolved)
-            return ['message' => 'Unauthorized', 'code' => "403"];
+            return ['message' => 'Unauthorized', 'code' => 403];
         }
         if ($role == 'Municipality Deputy' && $report->status == 'Resolved'
             || $role == 'Municipality Deputy' && $report->status == 'Rejected') {
             // Insufficent permission (only Municipality Heads can update Resolved or Rejected status)
-            return ['message' => 'Unauthorized', 'code' => "403"];
+            return ['message' => 'Unauthorized', 'code' => 403];
         }
 
         // Update report
@@ -286,7 +329,7 @@ class ReportController extends Controller
             'message' => 'Report updated successfully',
             'report' => $report,
             'images' => $images,
-            'code' => '200'
+            'code' => 200
         ];
     }
 
@@ -309,7 +352,76 @@ class ReportController extends Controller
 
         return [
             'message' => 'Report deleted successfully',
-            'code' => '200'
+            'code' => 200
         ];
+    }
+
+    // Add to or remove from bookmark (availavle to officers and admins)
+    public function bookmark(Request $request) {
+        // Request rule
+        $request->validate([
+            'report_id' => ["required", "integer", "exists:reports,id"]
+        ]);
+
+        // Find the report
+        $report = Report::find($request->report_id);
+
+        // Failed to find report
+        if (!$report) {
+            return ['message' => "Report not found", 'code' => 404];
+        }
+
+        // Is citizen
+        if ($request->user()->status) {
+            return ['message' => "Citizens cannot bookmark reports", 'code' => 403];
+        }
+
+        // For officers
+        else if ($request->user()->role) {
+            if ($request->user()->province_id != $report->province_id) {
+                return ['message' => "You cannot bookmark reports from other provinces", 'code' => 403];
+            }
+
+            // Report is already bookmarked
+            if (DB::table('officer_bookmarks')->where('officer_id', $request->user()->id)->where('report_id', $report->id)->exists()) {
+                // Remove it from bookmark
+                DB::table('officer_bookmarks')->where('officer_id', $request->user()->id)->where('report_id', $report->id)->delete();
+                return [
+                    'message' => "Bookmark removed",
+                    'code' => 200
+                ];
+            }
+
+            // Report is not bookmarked
+            DB::table('officer_bookmarks')->insert([
+                'officer_id' => $request->user()->id,
+                'report_id' => $report->id
+            ]);
+            return [
+                'message' => 'Bookmark added',
+                'code' => 200
+            ];
+        }
+        // For admins
+        else {
+            if (DB::table('admin_bookmarks')->where('admin_id', $request->user()->id)->where('report_id', $report->id)->exists()) {
+                // Report is already bookmarked - remove it
+                DB::table('admin_bookmarks')->where('admin_id', $request->user()->id)->where('report_id', $report->id)->delete();
+                return [
+                    'message' => "Bookmark removed",
+                    'code' => 200
+                ];
+            }
+
+            // Report is not bookmarked
+            DB::table('admin_bookmarks')->insert([
+                'admin_id' => $request->user()->id,
+                'report_id' => $report->id
+            ]);
+            return [
+                'message' => 'Bookmark added',
+                'code' => 200
+            ];
+        }
     }
 }

@@ -68,7 +68,7 @@ class CitizenController extends Controller
     public function approve(Request $request) {
         // Request rule
         $request->validate([
-            'id' => ['required', 'numeric', 'exists:citizens,id'],
+            'id' => ['required', 'string', 'exists:citizens,id'],
         ]);
 
         // Try to find the citizen
@@ -97,7 +97,7 @@ class CitizenController extends Controller
     public function reject(Request $request) {
         // Request rule
         $request->validate([
-            'id' => ['required', 'numeric', 'exists:citizens,id'],
+            'id' => ['required', 'string', 'exists:citizens,id'],
         ]);
 
         // Try to find the citizen
@@ -107,21 +107,81 @@ class CitizenController extends Controller
             // Not found
             return ['message' => 'Citizen not found', 'code' => '404'];
         }
-        else if ($citizen->status != 'Pending') {
-            // Found but no longer in review
-            return ['message' => 'This citizen is no longer in review', 'code' => '400'];
-        }
         else if ($citizen->status == 'Rejected') {
             // Found but already rejected
             return ['message' => 'This citizen is already rejected', 'code' => '400'];
         }
+        else if ($citizen->status != 'Pending') {
+            // Found but no longer in review
+            return ['message' => 'This citizen is no longer in review', 'code' => '400'];
+        }
 
         // Updated the status
-        $citizen->status = 'Rejected';
+        $citizen->status = "Rejected";
         $citizen->save();
 
         return [
-            'message' => 'Citizen rejected',
+            'message' => "Citizen rejected",
+            'code' => "200"
+        ];
+    }
+
+    // Restrict user access
+    public function restrict(Request $request) {
+        // Request rule
+        $request->validate([
+            'id' => ['required', 'string', 'exists:citizens,id']
+        ]);
+
+        // Try to find citizen
+        $citizen = Citizen::find($request->id);
+
+        if (!$citizen) {
+            // Not found
+            return ['message' => 'Citizen not found', 'code' => '404'];
+        }
+        else if ($citizen->status == 'Restricted') {
+            // Found but is account was restricted
+            return ['message' => 'This citizen is already restricted', 'code' => '400'];
+        }
+        else if ($citizen->status != 'Approved') {
+            // Found but is pending/rejected
+            return ['message' => 'This citizen is not subject to moderation', 'code' => '400'];
+        }
+
+        // Updated the status
+        $citizen->status = "Restricted";
+        $citizen->save();
+
+        return [
+            'message' => "Citizen access restricted",
+            'code' => "200"
+        ];
+    }
+
+    public function unrestrict(Request $request) {
+        $request->validate([
+            'id' => ['required', 'string', 'exists:citizens,id'],
+        ]);
+
+        // Try to find the citizen
+        $citizen = Citizen::find($request->id);
+
+        if (!$citizen) {
+            // Not found
+            return ['message' => 'Citizen not found', 'code' => '404'];
+        }
+        else if ($citizen->status != "Restricted") {
+            // Found but is account was not restricted
+            return ['message' => 'This citizen is not restricted', 'code' => '400'];
+        }
+
+        // Updated the status
+        $citizen->status = "Approved";
+        $citizen->save();
+
+        return [
+            'message' => "Citizen access unrestricted",
             'code' => "200"
         ];
     }
@@ -130,7 +190,7 @@ class CitizenController extends Controller
     public function delete(Request $request) {
         // Request rule
         $request->validate([
-            'id' => ['required', 'numeric', 'exists:citizens,id'],
+            'id' => ['required', 'string', 'exists:citizens,id'],
         ]);
 
         // Attempt to find citizen
@@ -152,5 +212,4 @@ class CitizenController extends Controller
             'code' => "200"
         ];
     }
-
 }

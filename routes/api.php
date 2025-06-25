@@ -52,11 +52,12 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/reports', function(Request $request) {
         // Override request
         if ($request->user()->status) { // Is citizen; only show their own reports
-            $request->citizen_id = $request->user()->id;
+            if ($request->user()->status == "Pending" || $request->user()->status == "Rejected") {
+                return response()->json([
+                    'message' => "Unauthorized"
+                ], 403); // Reject request if they has not been approved before
+            }
         }
-        else if ($request->user()->role) { // Is officer; only show reports in their province
-            $request->province_name = DB::table('provinces')->where('id', $request->user()->province_id)->first()->name;
-        } // Else is admin; show all reports
 
         $response = app('App\Http\Controllers\ReportController')->readList($request);
 
@@ -68,12 +69,29 @@ Route::middleware('auth:sanctum')->group(function() {
 
     // View specific report
     Route::get('/report', function(Request $request) {
+        if ($request->user()->status) { // If the reqeust comes from a citizen
+            if ($request->user()->status == "Pending" || $request->user()->status == "Rejected") {
+                return response()->json([
+                    'message' => "Unauthorized"
+                ], 403);
+            }
+        }
+
         $response = app('App\Http\Controllers\ReportController')->readOne($request);
 
         return response()->json([
             'message' => $response['message'],
             'report' => $response['report'],
             'images' => $response['images']
+        ], $response['code']);
+    });
+
+    // Add report to bookmark
+    Route::post('/report/bookmark', function(Request $request) {
+        $response = app('App\Http\Controllers\ReportController')->bookmark($request);
+
+        return response()->json([
+            'message' => $response['message'],
         ], $response['code']);
     });
 });
@@ -190,6 +208,24 @@ Route::middleware('auth:admin-api')->group(function() {
         ], $response['code']);
     });
 
+    // Restrict citizen
+    Route::post('/restrict/citizen', function(Request $request) {
+        $response = app('App\Http\Controllers\CitizenController')->restrict($request);
+
+        return response()->json([
+            'message' => $response['message']
+        ], $response['code']);
+    });
+
+    // Unrestrict citizen
+    Route::post('/unrestrict/citizen', function(Request $request) {
+        $response = app('App\Http\Controllers\CitizenController')->unrestrict($request);
+
+        return response()->json([
+            'message' => $response['message']
+        ], $response['code']);
+    });
+
     // Issue officer account
     Route::post('/issue/officer', function(Request $request) {
         $response = app('App\Http\Controllers\OfficerController')->create($request);
@@ -217,7 +253,6 @@ Route::middleware('auth:admin-api')->group(function() {
             'message' => $response['message']
         ], $response['code']);
     });
-
 });
 
 // Route::middleware(['guest'])->post('/login', [TokenAuthenticationController::class, 'store']);

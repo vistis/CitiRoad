@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Support\Facades\DB;
 use App\Models\Citizen;
 use App\Models\Officer;
 use App\Models\Admin;
@@ -18,6 +19,9 @@ class TokenController extends Controller
     public function createCitizen(Request $request) {
         // Call create function
         $citizen = app('App\Http\Controllers\CitizenController')->create($request);
+
+        // Resolve province name
+        $citizen->province = DB::table('provinces')->where('id', $citizen->province_id)->first()->name;
 
         // JSON response
         $response = [
@@ -33,6 +37,9 @@ class TokenController extends Controller
     public function createOfficer(Request $request) {
         // Call create function
         $officer = app('App\Http\Controllers\OfficerController')->create($request);
+
+        // Resolve province name
+        $officer->province = DB::table('provinces')->where('id', $officer->province_id)->first()->name;
 
         // JSON response
         $response = [
@@ -92,6 +99,9 @@ class TokenController extends Controller
             }
         }
 
+        // Resolve province name
+        $citizen->province = DB::table('provinces')->where('id', $citizen->province_id)->first()->name;
+
         // Authentication attempt successful
         $response = [
             'message' => "Logged in as citizen",
@@ -120,6 +130,9 @@ class TokenController extends Controller
                 // Failed to authenticate
             return response()->json(['message' => "The provided credentials are incorrect"], 401);
         }
+
+        // Resolve province name
+        $officer->province = DB::table('provinces')->where('id', $officer->province_id)->first()->name;
 
         // Authentication attempt successful
         $response = [
