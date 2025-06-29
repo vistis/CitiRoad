@@ -18,15 +18,17 @@ class TokenController extends Controller
     // Citizen
     public function createCitizen(Request $request) {
         // Call create function
-        $citizen = app('App\Http\Controllers\CitizenController')->create($request);
+        $response = app('App\Http\Controllers\CitizenController')->create($request);
+
+        $citizen = $response['account'];
 
         // Resolve province name
-        $citizen->province = DB::table('provinces')->where('id', $citizen->province_id)->first()->name;
+        $citizen->province_name = DB::table('provinces')->where('id', $citizen->province_id)->first()->name;
 
         // JSON response
         $response = [
             'message' => "Registered as citizen",
-            'account-info' => $citizen,
+            'account' => $citizen,
             'token' => $citizen->createToken('citizen-api')->plainTextToken // Generate token
         ];
 
@@ -36,10 +38,12 @@ class TokenController extends Controller
     // Officer
     public function createOfficer(Request $request) {
         // Call create function
-        $officer = app('App\Http\Controllers\OfficerController')->create($request);
+        $response = app('App\Http\Controllers\OfficerController')->create($request);
+
+        $officer = $response['account'];
 
         // Resolve province name
-        $officer->province = DB::table('provinces')->where('id', $officer->province_id)->first()->name;
+        $officer->province_name = DB::table('provinces')->where('id', $officer->province_id)->first()->name;
 
         // JSON response
         $response = [
@@ -93,7 +97,7 @@ class TokenController extends Controller
         else {
             $citizen = Citizen::where('phone_number', $request->phone_number)->first();
 
-            if (!citizen || Hash::check($requestPassword, $citizen->password)) {
+            if (!$citizen || !Hash::check($requestPassword, $citizen->password)) {
                 // Failed to authenticate
                 return response()->json(['message' => "The provided credentials are incorrect"], 401);
             }
@@ -105,7 +109,7 @@ class TokenController extends Controller
         // Authentication attempt successful
         $response = [
             'message' => "Logged in as citizen",
-            'account-info' => $citizen,
+            'account' => $citizen,
             'token' => $citizen->createToken('citizen-api')->plainTextToken // Generate token
         ];
 
@@ -137,7 +141,7 @@ class TokenController extends Controller
         // Authentication attempt successful
         $response = [
             'message' => "Logged in as officer",
-            'account-info' => $officer,
+            'account' => $officer,
             'token' => $officer->createToken('officer-api')->plainTextToken // Generate token
         ];
 
@@ -166,7 +170,7 @@ class TokenController extends Controller
         // Authentication attempt successful
         $response = [
             'message' => "Logged in as admin",
-            'account-info' => $admin,
+            'account' => $admin,
             'token' => $admin->createToken('admin-api')->plainTextToken // Generate token
         ];
 
