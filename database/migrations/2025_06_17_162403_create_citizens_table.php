@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone_number')->unique();
             $table->string('password');
-            $table->enum('status', ["Pending","Approved","Restricted","Deactivated"]);
+            $table->enum('status', ["Pending","Approved","Restricted","Rejected"]);
             $table->integer('province_id');
             $table->foreign('province_id')->references('id')->on('provinces');
             $table->text('address');
