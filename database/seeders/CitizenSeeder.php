@@ -24,7 +24,7 @@ class CitizenSeeder extends Seeder
             'address' => "Deleted",
             'date_of_birth' => "1990-01-01",
             'gender' => 'Prefer Not to Say',
-            'profile_picture_path' => "deleted.png"
+            'profile_picture_path' => "storage/deleted.png"
         ]);
     }
 }
