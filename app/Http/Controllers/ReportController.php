@@ -19,17 +19,17 @@ class ReportController extends Controller
             // Get the province ID of the officer
             $provinceID = $request->user()->province_id;
 
-            $query = DB::table('reports')->where('province_id', $provinceID);
+            $query = DB::table('reports')->where('province_id', $provinceID)->get();
         }
         else {
-            $query = DB::table('reports');
+            $query = DB::table('reports')->get();
         }
 
         // Select all entries in the reports table
         $total = $query->count();
 
         // Select active entries (not Resolved or Rejected)
-        $active = $query->where(function (Builder $query) {
+        $active = DB::table('reports')->where(function (Builder $query) {
             $query->where('status', "Reviewing")
                 ->orWhere('status', "Investigating")
                 ->orWhere('status', "Resolving");

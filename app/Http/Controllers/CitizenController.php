@@ -16,7 +16,7 @@ class CitizenController extends Controller
     //** STATISTICS (FOR ADMIN DASHBOARD) */
     public function stats() {
         // Database query
-        $query = DB::table('citizens');
+        $query = DB::table('citizens')->get();
 
         // Get total citizen account count
         $total = $query->count() - 1; // -1 to exclude shell account

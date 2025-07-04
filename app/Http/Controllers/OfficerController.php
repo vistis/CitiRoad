@@ -15,7 +15,7 @@ class OfficerController extends Controller
     //** STATISTICS (FOR ADMIN DASHBOARD) *//
     public function stats() {
         // Database query
-        $query = DB::table('officers');
+        $query = DB::table('officers')->get();
 
         // Count total officers
         $total = $query->count();
