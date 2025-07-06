@@ -62,9 +62,9 @@ class ReportSeeder extends Seeder
             ['type' => 'Before', 'image_path' => "reports/3-before-0.jpg", 'report_id' => 3],
             ['type' => 'Before', 'image_path' => "reports/3-before-1.jpg", 'report_id' => 3],
             ['type' => 'Before', 'image_path' => "reports/3-before-2.jpg", 'report_id' => 3],
-            ['type' => 'Before', 'image_path' => "reports/4-before-0.jpg", 'report_id' => 4],
+            ['type' => 'Before', 'image_path' => "reports/4-before-0.png", 'report_id' => 4],
             ['type' => 'Before', 'image_path' => "reports/5-before-0.jpg", 'report_id' => 5],
-            ['type' => 'After', 'image_path' => "reports/5-after-0.jpg", 'report_id' => 5],
+            ['type' => 'After', 'image_path' => "reports/5-after-0.png", 'report_id' => 5],
         ]);
 
         // Set status
