@@ -58,14 +58,12 @@ class ReportSeeder extends Seeder
         DB::table('report_images')->insert([
             ['type' => 'Before', 'image_path' => "reports/1-before-0.jpg", 'report_id' => 1],
             ['type' => 'Before', 'image_path' => "reports/1-before-1.jpg", 'report_id' => 1],
-            ['type' => 'Before', 'image_path' => "reports/2-before-0.jpg", 'report_id' => 2],
             ['type' => 'Before', 'image_path' => "reports/2-before-1.jpg", 'report_id' => 2],
             ['type' => 'Before', 'image_path' => "reports/3-before-0.jpg", 'report_id' => 3],
             ['type' => 'Before', 'image_path' => "reports/3-before-1.jpg", 'report_id' => 3],
+            ['type' => 'Before', 'image_path' => "reports/3-before-2.jpg", 'report_id' => 3],
             ['type' => 'Before', 'image_path' => "reports/4-before-0.jpg", 'report_id' => 4],
-            ['type' => 'Before', 'image_path' => "reports/4-before-1.jpg", 'report_id' => 4],
             ['type' => 'Before', 'image_path' => "reports/5-before-0.jpg", 'report_id' => 5],
-            ['type' => 'Before', 'image_path' => "reports/5-before-1.jpg", 'report_id' => 5],
             ['type' => 'After', 'image_path' => "reports/5-after-0.jpg", 'report_id' => 5],
         ]);
 
