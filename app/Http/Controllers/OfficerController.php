@@ -277,6 +277,11 @@ class OfficerController extends Controller
         // Find the requested officer
         $officer = Officer::find($request->id);
 
+        // Delete references to this officer
+        DB::table('reports')->where('updated_by', $request->id)->update([
+            'updated_by' => null
+        ]);
+
         // Delete picture off storage
         Storage::disk('public')->delete($officer->profile_picture_path);
 
