@@ -52,22 +52,6 @@ return [
             'driver' => 'session',
             'provider' => 'admins',
         ],
-        'sanctum' => [
-            'driver' => 'sanctum',
-            'provider' => null,
-        ],
-        'citizen-api' => [
-            'driver' => 'sanctum',
-            'provider' => 'citizens',
-        ],
-        'officer-api' => [
-            'driver' => 'sanctum',
-            'provider' => 'officers',
-        ],
-        'admin-api' => [
-            'driver' => 'sanctum',
-            'provider' => 'admins',
-        ],
     ],
 
     /*
