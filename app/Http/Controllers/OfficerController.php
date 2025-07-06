@@ -227,7 +227,7 @@ class OfficerController extends Controller
         // Resolve province ID
         if ($request->province) {
             $data['province_id'] = DB::table('provinces')->where('name', $request->province)->value('id');
-            
+
             // Remove province field
             unset($data['province']);
         }
