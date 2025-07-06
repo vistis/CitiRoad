@@ -17,14 +17,14 @@ class CitizenSeeder extends Seeder
             'id' => 0,
             'first_name' => "Deleted",
             'last_name' => "Account",
-            'email' => "deleted@account.shell",
+            'email' => "deleted@shell.account",
             'phone_number' => "0000000000",
             'password' => bcrypt('deleted'),
             'province_id' => 12,
-            'address' => "Deleted",
+            'address' => "Unknown",
             'date_of_birth' => "1990-01-01",
             'gender' => 'Prefer Not to Say',
-            'profile_picture_path' => "storage/deleted.png"
+            'profile_picture_path' => "storage/deleted.svg"
         ]);
     }
 }
