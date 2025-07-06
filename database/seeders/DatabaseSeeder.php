@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             CitizenSeeder::class,
             OfficerSeeder::class,
+            ReportSeeder::class,
         ]);
     }
 }

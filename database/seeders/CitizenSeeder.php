@@ -101,7 +101,7 @@ class CitizenSeeder extends Seeder
         Citizen::where('id', 0)->update(['status' => 'Restricted']);
         Citizen::where('id', 1)->update(['status' => 'Approved']);
         Citizen::where('id', 2)->update(['status' => 'Pending']);
-        Citizen::where('id', 3)->update(['status' => 'Pending']);
+        Citizen::where('id', 3)->update(['status' => 'Approved']);
         Citizen::where('id', 4)->update(['status' => 'Restricted']);
         Citizen::where('id', 5)->update(['status' => 'Rejected']);
     }
