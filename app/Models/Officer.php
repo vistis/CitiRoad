@@ -7,8 +7,6 @@ use Laravel\Sanctum\HasApiTokens;
 
 class Officer extends Authenticatable
 {
-    use HasApiTokens;
-
     public $incrementing = false;
 
     protected $table = 'officers';
