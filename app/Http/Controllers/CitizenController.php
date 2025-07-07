@@ -22,7 +22,7 @@ class CitizenController extends Controller
         $total = $query->count();
 
         // Get total pending account
-        $pending = $query->where('status', 'Pending')->count() - 1; // -1 to exclude shell account
+        $pending = $query->where('status', 'Pending')->count();
 
         // Get total approved account
         $approved = $query->where('status', 'Approved')->count();
