@@ -24,7 +24,7 @@ class CitizenSeeder extends Seeder
             'address' => "Unknown",
             'date_of_birth' => "1990-01-01",
             'gender' => 'Prefer Not to Say',
-            'profile_picture_path' => "storage/deleted.svg"
+            'profile_picture_path' => "deleted.svg"
         ]);
 
         Citizen::create([
@@ -38,7 +38,7 @@ class CitizenSeeder extends Seeder
             'address' => "Chrouy Changvar Khan, Kaoh Dach Sangkat, Lvea Village",
             'date_of_birth' => "1982-04-23",
             'gender' => 'Female',
-            'profile_picture_path' => "storage/citizens/1.jpg"
+            'profile_picture_path' => "citizens/1.jpg"
         ]);
 
         Citizen::create([
@@ -52,7 +52,7 @@ class CitizenSeeder extends Seeder
             'address' => "Doun Penh Khan, Chakto Mukh Sangkat, Phum 6",
             'date_of_birth' => "1995-06-11",
             'gender' => 'Male',
-            'profile_picture_path' => "storage/citizens/2.jpg"
+            'profile_picture_path' => "citizens/2.jpg"
         ]);
 
         Citizen::create([
@@ -66,7 +66,7 @@ class CitizenSeeder extends Seeder
             'address' => "Phnum Sruoch District, Krang Dei Vay Commune, Krang Kor Village",
             'date_of_birth' => "1990-05-04",
             'gender' => 'Female',
-            'profile_picture_path' => "storage/citizens/3.jpg"
+            'profile_picture_path' => "citizens/3.jpg"
         ]);
 
         Citizen::create([
@@ -80,7 +80,7 @@ class CitizenSeeder extends Seeder
             'address' => "Pur Rieng District, Prey Kanlaong Commune, Popueus Village",
             'date_of_birth' => "1978-11-17",
             'gender' => 'Male',
-            'profile_picture_path' => "storage/citizens/4.jpg"
+            'profile_picture_path' => "citizens/4.jpg"
         ]);
 
         Citizen::create([
@@ -94,7 +94,7 @@ class CitizenSeeder extends Seeder
             'address' => "Khsach Kandal District, Roka Chonlueng Commune, Tang Ruessei Village",
             'date_of_birth' => "1997-09-13",
             'gender' => 'Male',
-            'profile_picture_path' => "storage/citizens/5.jpg"
+            'profile_picture_path' => "citizens/5.jpg"
         ]);
 
         // Set status

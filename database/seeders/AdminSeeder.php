@@ -20,7 +20,7 @@ class AdminSeeder extends Seeder
             'email' => 'vkim1@paragoniu.edu.kh',
             'phone_number' => '081765103',
             'password' => bcrypt('password'),
-            'profile_picture_path' => 'storage/admins/1.png'
+            'profile_picture_path' => 'admins/1.png'
         ]);
 
         Admin::create([
@@ -30,7 +30,7 @@ class AdminSeeder extends Seeder
             'email' => 'hphour@paragoniu.edu.kh',
             'phone_number' => '017391648',
             'password' => bcrypt('password'),
-            'profile_picture_path' => 'storage/admins/2.jpg'
+            'profile_picture_path' => 'admins/2.jpg'
         ]);
 
         Admin::create([
@@ -40,7 +40,7 @@ class AdminSeeder extends Seeder
             'email' => 'pkong3@paragoniu.edu.kh',
             'phone_number' => '078194725',
             'password' => bcrypt('password'),
-            'profile_picture_path' => 'storage/admins/3.jpg'
+            'profile_picture_path' => 'admins/3.jpg'
         ]);
     }
 }
