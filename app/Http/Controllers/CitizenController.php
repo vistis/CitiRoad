@@ -19,7 +19,7 @@ class CitizenController extends Controller
         $query = DB::table('citizens')->get();
 
         // Get total citizen account count
-        $total = $query->count();
+        $total = $query->count() - 1; // Exclude shell account
 
         // Get total pending account
         $pending = $query->where('status', 'Pending')->count();
