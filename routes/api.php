@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\QuoteController;
 use App\Http\Controllers\Api\TokenController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -45,7 +44,7 @@ Route::middleware('auth:sanctum')->group(function() {
     });
 
     // Logout
-    Route::post('/logout', [TokenController::class, 'destroy']);
+    Route::delete('/logout', [TokenController::class, 'destroy']);
 
     // Update own account
     Route::post('/account/update', function(Request $request) {
@@ -81,7 +80,7 @@ Route::middleware('auth:sanctum')->group(function() {
     });
 
     // Add report to bookmark
-    Route::post('/report/bookmark', function(Request $request) {
+    Route::put('/report/bookmark', function(Request $request) {
         $response = app('App\Http\Controllers\ReportController')->bookmark($request);
 
         return response()->json($response, $response['code']);
@@ -91,13 +90,18 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/citizen', function(Request $request) {
         $citizen = app('App\Http\Controllers\CitizenController')->readOne($request);
 
-        $reports = app('App\Http\Controllers\ReportController')->readAll($request);
+        if (!DB::table('reports')->where('citizen_id', $citizen['account']->id)->exists()) {
+            $response = ['account' => $citizen['account']];
+        }
 
-        $response = [
-            'account' => $citizen['account'],
-            'report-count' => $reports['count'],
-            'reports' => $reports['reports']
-        ];
+        else {
+            $reports = app('App\Http\Controllers\ReportController')->readAll($request);
+            $response = [
+                'account' => $citizen['account'],
+                'report-count' => $reports['count'],
+                'reports' => $reports['reports']
+            ];
+        }
 
         return response()->json($response, 200);
     });
@@ -128,7 +132,7 @@ Route::middleware('auth:citizen-api')->group(function() {
     });
 
     // Delete own account
-    Route::post('/account/delete', function(Request $request) {
+    Route::delete('/account/delete', function(Request $request) {
         // Override request
         $request['id'] = $request->user()->id;
 
@@ -216,7 +220,7 @@ Route::middleware('auth:admin-api')->group(function() {
     });
 
     // Delete report
-    Route::post('/report/delete', function(Request $request) {
+    Route::delete('/report/delete', function(Request $request) {
         $response = app('App\Http\Controllers\ReportController')->delete($request);
 
         return response()->json($response, $response['code']);
@@ -230,28 +234,28 @@ Route::middleware('auth:admin-api')->group(function() {
     });
 
     // Approve citizen
-    Route::post('/citizen/approve', function(Request $request) {
+    Route::put('/citizen/approve', function(Request $request) {
         $response = app('App\Http\Controllers\CitizenController')->approve($request);
 
         return response()->json($response, $response['code']);
     });
 
     // Reject citizen application
-    Route::post('/citizen/reject', function(Request $request) {
+    Route::put('/citizen/reject', function(Request $request) {
         $response = app('App\Http\Controllers\CitizenController')->reject($request);
 
         return response()->json($response, $response['code']);
     });
 
     // Restrict citizen
-    Route::post('/citizen/restrict', function(Request $request) {
+    Route::put('/citizen/restrict', function(Request $request) {
         $response = app('App\Http\Controllers\CitizenController')->restrict($request);
 
         return response()->json($response, $response['code']);
     });
 
     // Unrestrict citizen
-    Route::post('/citizen/unrestrict', function(Request $request) {
+    Route::put('/citizen/unrestrict', function(Request $request) {
         $response = app('App\Http\Controllers\CitizenController')->unrestrict($request);
 
         return response()->json($response, $response['code']);
@@ -272,14 +276,14 @@ Route::middleware('auth:admin-api')->group(function() {
     });
 
     // Delete citizen [DANGER]
-    Route::post('/citizen/delete', function(Request $request) {
+    Route::delete('/citizen/delete', function(Request $request) {
         $response = app('App\Http\Controllers\CitizenController')->delete($request);
 
         return response()->json($response, $response['code']);
     });
 
     // Delete officer
-    Route::post('/officer/delete', function(Request $request) {
+    Route::delete('/officer/delete', function(Request $request) {
         $response = app('App\Http\Controllers\OfficerController')->delete($request);
 
         return response()->json($response, $response['code']);
