@@ -135,10 +135,10 @@ class CitizenController extends Controller
     public function readAll(Request $request) {
         // Request rules
         $request->validate([
-            'search' => ['string'],
-            'sort' => ['string', 'in:first_name,created_at,updated_at'],
-            'order' => ['string', 'in:asc,desc'],
-            'filter' => ['string']
+            'search' => ['nullable', 'string'],
+            'sort' => ['nullable', 'string', 'in:first_name,created_at,updated_at'],
+            'order' => ['nullable', 'string', 'in:asc,desc'],
+            'filter' => ['nullable', 'string']
         ]);
 
         // Get search query from the request
@@ -168,8 +168,8 @@ class CitizenController extends Controller
 
         // Get filter option from request
         if ($request->filter) {
-            if ($provinceName = DB::table('provinces')->where('name', $request->filter)->value('name')) {
-                $citizens = $citizens->where('province', $provinceName);
+            if ($request->filter == "Pending" || $request->filter == "Active" || $request->filter == "Rejected" || $request->filter == "Restricted") {
+                $citizens = $citizens->where('status', $request->filter);
             }
         }
 
