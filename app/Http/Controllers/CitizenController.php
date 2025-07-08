@@ -118,7 +118,7 @@ class CitizenController extends Controller
                 'citizens.date_of_birth as date_of_birth',
                 'citizens.gender as gender',
                 'citizens.profile_picture_path as profile_picture_path',
-                'citizens.created_at as created at',
+                'citizens.created_at as created_at',
                 'citizens.updated_at as updated_at'
             ])
             ->first();
