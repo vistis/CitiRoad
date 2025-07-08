@@ -32,7 +32,7 @@
     <div class="flex items-center space-x-2 flex-shrink-0">
         @if($citizen->status == 'Pending')
             {{-- Approve Button --}}
-            <form action="{{ route('admin.citizens.approve', $citizen->id) }}" method="POST">
+            <form action="{{ route('admin.citizens.approve') }}" method="POST">
                 @csrf
                 @method('PATCH') {{-- Explicitly use PATCH --}}
                 <input type="hidden" name="id" value="{{$citizen->id}}" hidden>
@@ -43,7 +43,7 @@
                 </button>
             </form>
             {{-- Reject Button --}}
-            <form action="{{ route('admin.citizens.reject', $citizen->id) }}" method="POST">
+            <form action="{{ route('admin.citizens.reject') }}" method="POST">
                 @csrf
                 @method('PATCH') {{-- Explicitly use PATCH --}}
                 <input type="hidden" name="id" value="{{$citizen->id}}" hidden>
@@ -55,7 +55,7 @@
             </form>
         @elseif($citizen->status == 'Approved')
             {{-- Restrict Button --}}
-            <form action="{{ route('admin.citizens.restrict', $citizen->id) }}" method="POST">
+            <form action="{{ route('admin.citizens.restrict') }}" method="POST">
                 @csrf
                 @method('PATCH') {{-- Explicitly use PATCH --}}
                 <input type="hidden" name="id" value="{{$citizen->id}}" hidden>
@@ -65,21 +65,10 @@
                     Restrict
                 </button>
             </form>
-            {{-- Deactivate Button (Changed to Delete) --}}
-            {{-- IMPORTANT: This will PERMANENTLY DELETE the citizen, not just deactivate them, as per CitizenController::delete --}}
-            <form action="{{ route('admin.citizens.delete', $citizen->id) }}" method="POST">
-                @csrf
-                @method('DELETE') {{-- Changed to DELETE --}}
-                <input type="hidden" name="id" value="{{$citizen->id}}" hidden>
-                <button type="submit"
-                        class="px-3 py-2 bg-red-500 text-white rounded-md text-sm font-medium hover:bg-red-600 transition-colors"
-                        onclick="return confirm('WARNING: This will permanently delete {{ $citizen->first_name }} {{ $citizen->last_name }}. Are you sure?');">
-                    Delete
-                </button>
-            </form>
+
         @elseif($citizen->status == 'Rejected')
             {{-- Approve Button --}}
-            <form action="{{ route('admin.citizens.approve', $citizen->id) }}" method="POST">
+            <form action="{{ route('admin.citizens.approve') }}" method="POST">
                 @csrf
                 @method('PATCH') {{-- Explicitly use PATCH --}}
                 <input type="hidden" name="id" value="{{$citizen->id}}" hidden>
@@ -89,19 +78,10 @@
                     Approve
                 </button>
             </form>
-            <form action="{{ route('admin.citizens.delete', $citizen->id) }}" method="POST">
-                @csrf
-                @method('DELETE') {{-- Changed to DELETE --}}
-                <input type="hidden" name="id" value="{{$citizen->id}}" hidden>
-                <button type="submit"
-                        class="px-3 py-2 bg-red-500 text-white rounded-md text-sm font-medium hover:bg-red-600 transition-colors"
-                        onclick="return confirm('WARNING: This will permanently delete {{ $citizen->first_name }} {{ $citizen->last_name }}. Are you sure?');">
-                    Delete
-                </button>
-            </form>
+
         @elseif($citizen->status == 'Restricted')
             {{-- Unrestrict Button --}}
-            <form action="{{ route('admin.citizens.unrestrict', $citizen->id) }}" method="POST">
+            <form action="{{ route('admin.citizens.unrestrict') }}" method="POST">
                 @csrf
                 @method('PATCH') {{-- Explicitly use PATCH --}}
                 <input type="hidden" name="id" value="{{$citizen->id}}" hidden>
@@ -111,16 +91,7 @@
                     Unrestrict
                 </button>
             </form>
-            <form action="{{ route('admin.citizens.delete', $citizen->id) }}" method="POST">
-                @csrf
-                @method('DELETE') {{-- Changed to DELETE --}}
-                <input type="hidden" name="id" value="{{$citizen->id}}" hidden>
-                <button type="submit"
-                        class="px-3 py-2 bg-red-500 text-white rounded-md text-sm font-medium hover:bg-red-600 transition-colors"
-                        onclick="return confirm('WARNING: This will permanently delete {{ $citizen->first_name }} {{ $citizen->last_name }}. Are you sure?');">
-                    Delete
-                </button>
-            </form>
+
         @endif
     </div>
 </div>

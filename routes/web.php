@@ -214,7 +214,7 @@ Route::middleware('auth:admin')->group(function () {
 
     Route::delete('/admin/reports/delete', function(Request $request) {
         app(ReportController::class)->delete($request);
-        return back();
+        return redirect()->route('admin.reports.all');
     })->name('admin.reports.delete');
 
     Route::patch('/admin/citizens/approve', function(Request $request) {
@@ -239,7 +239,7 @@ Route::middleware('auth:admin')->group(function () {
 
     Route::delete('/admin/citizens/delete', function(Request $request) {
         app(CitizenController::class)->delete($request);
-        return back();
+        return redirect()->route('admin.citizens');
     })->name('admin.citizens.delete');
 });
 
@@ -251,7 +251,6 @@ Route::middleware(['auth:admin'])->group(function () {
         app(ReportController::class)->bookmark($request);
         return back();
     })->name('report.bookmark');
-    Route::delete('/reports/delete', [ReportController::class, 'delete'])->name('report.delete');
 });
 
 
