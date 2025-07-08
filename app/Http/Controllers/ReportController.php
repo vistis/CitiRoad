@@ -207,10 +207,10 @@ class ReportController extends Controller
 
         // Request rules
         $request->validate([
-            'search' => ['string'],
-            'sort' => ['string', 'in:title,created_at,updated_at'],
-            'order' => ['string', 'in:asc,desc'],
-            'filter' => ['string']
+            'search' => ['nullable', 'string'],
+            'sort' => ['nullable', 'string', 'in:title,created_at,updated_at'],
+            'order' => ['nullable', 'string', 'in:asc,desc'],
+            'filter' => ['nullable', 'string']
         ]);
 
         // Get search query from the request

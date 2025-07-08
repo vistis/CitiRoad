@@ -71,9 +71,9 @@ class AdminController extends Controller
     public function readAll(Request $request) {
         // Request rules
         $request->validate([
-            'search' => ['string'],
-            'sort' => ['string', 'in:first_name,created_at,updated_at'],
-            'order' => ['string', 'in:asc,desc']
+            'search' => ['nullable', 'string'],
+            'sort' => ['nullable', 'string', 'in:first_name,created_at,updated_at'],
+            'order' => ['nullable', 'string', 'in:asc,desc']
         ]);
 
         // Get search query from the request

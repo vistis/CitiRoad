@@ -149,10 +149,10 @@ class OfficerController extends Controller
 
         // Request rules
         $request->validate([
-            'search' => ['string'],
-            'sort' => ['string', 'in:first_name,created_at,updated_at'],
-            'order' => ['string', 'in:asc,desc'],
-            'filter' => ['string']
+            'search' => ['nullable', 'string'],
+            'sort' => ['nullable', 'string', 'in:first_name,created_at,updated_at'],
+            'order' => ['nullable', 'string', 'in:asc,desc'],
+            'filter' => ['nullable', 'string']
         ]);
 
         // Get search query from the request
@@ -183,7 +183,7 @@ class OfficerController extends Controller
                 'provinces.name as province',
                 'officers.profile_picture_path as profile_picture_path'
             )
-            ->whereAny(['officers.first_name', 'officers.last_name'], 'like', $search)
+            ->whereAny(['officers.first_name', 'officers.last_name', 'provinces.name'], 'like', $search)
             ->orderBy($sort, $order)
             ->get();
 

@@ -118,7 +118,7 @@ class CitizenController extends Controller
                 'citizens.date_of_birth as date_of_birth',
                 'citizens.gender as gender',
                 'citizens.profile_picture_path as profile_picture_path',
-                'citizens.created_at as created at',
+                'citizens.created_at as created_at',
                 'citizens.updated_at as updated_at'
             ])
             ->first();
@@ -135,10 +135,10 @@ class CitizenController extends Controller
     public function readAll(Request $request) {
         // Request rules
         $request->validate([
-            'search' => ['string'],
-            'sort' => ['string', 'in:first_name,created_at,updated_at'],
-            'order' => ['string', 'in:asc,desc'],
-            'filter' => ['string']
+            'search' => ['nullable', 'string'],
+            'sort' => ['nullable', 'string', 'in:first_name,created_at,updated_at'],
+            'order' => ['nullable', 'string', 'in:asc,desc'],
+            'filter' => ['nullable', 'string']
         ]);
 
         // Get search query from the request
@@ -167,11 +167,11 @@ class CitizenController extends Controller
             ->get();
 
         // Get filter option from request
-        if ($request->filter) {
-            if ($provinceName = DB::table('provinces')->where('name', $request->filter)->value('name')) {
-                $citizens = $citizens->where('province', $provinceName);
-            }
-        }
+                if ($request->filter) {
+                    if ($request->filter == "Pending" || $request->filter == "Active" || $request->filter == "Rejected" || $request->filter == "Restricted") {
+                        $citizens = $citizens->where('status', $request->filter);
+                    }
+                }
 
         // Get pending accounts
         $pending = $citizens->where('status', "Pending");
