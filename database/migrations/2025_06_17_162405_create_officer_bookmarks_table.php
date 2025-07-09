@@ -17,7 +17,7 @@ return new class extends Migration
             $table->increments('id');
             $table->integer('report_id');
             $table->foreign('report_id')->references('id')->on('reports');
-            $table->string('officer_id');
+            $table->integer('officer_id');
             $table->foreign('officer_id')->references('id')->on('officers');
         });
 
