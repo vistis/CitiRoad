@@ -14,7 +14,7 @@
         <main class="flex-1 p-6">
             <div class="max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-md">
                 {{-- Back Button --}}
-                <a href="{{ route('admin.officer.show', ['id' => $officer->id]) }}" class="inline-flex items-center text-gray-600 hover:text-gray-800 mb-6">
+                <a href="javascript:history.back()" class="inline-flex items-center text-gray-600 hover:text-gray-800 mb-6">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                     </svg>
@@ -114,7 +114,19 @@
                         </div>
                     </div>
 
-                    {{-- PASSWORD UPDATE SECTION REMOVED FROM HERE --}}
+                    <!-- Password (Optional) -->
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password (Leave blank to keep current)</label>
+                        <input type="password" name="password" id="password" }}"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <!-- Password Confirmation (Optional) -->
+                    <div>
+                        <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                        <input type="password" name="password_confirmation" id="password_confirmation"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
 
                     <div class="mt-6 flex justify-end">
                         <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium shadow-md">

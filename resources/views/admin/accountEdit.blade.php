@@ -53,8 +53,10 @@
                 @endif
 
                 <form id="adminAccountUpdateForm" action="{{ route('admin.account.update') }}" method="POST" enctype="multipart/form-data">
+
                     @csrf
-                    {{-- REMOVE THE FOLLOWING LINE: @method('PUT') --}}
+
+                    {{-- Profile Picture Section --}}
 
                     <div class="flex flex-col items-center mb-6">
                         <label for="profile_picture_path" class="cursor-pointer">
@@ -92,6 +94,20 @@
                             <input type="text" name="phone_number" id="phone_number" value="{{ old('phone_number', $admin->phone_number) }}" required
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                         </div>
+
+                        <!-- Password (Optional) -->
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700">Password (Leave blank to keep current)</label>
+                            <input type="password" name="password" id="password" }}"
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <!-- Password Confirmation (Optional) -->
+                        <div>
+                            <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                            <input type="password" name="password_confirmation" id="password_confirmation"
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
                     </div>
 
                     <div class="mt-8 flex justify-end space-x-4">
@@ -107,7 +123,7 @@
         </main>
     </div>
 
-    <script>
+    <!-- <script>
         // JavaScript for profile picture preview
         function previewImage(event) {
             const reader = new FileReader();
@@ -242,6 +258,6 @@
                 sessionStorage.removeItem('adminAccountSuccessMessage');
             }
         });
-    </script>
+    </script> -->
 </body>
 </html>

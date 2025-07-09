@@ -221,7 +221,7 @@ class OfficerController extends Controller
             'phone_number' => ['string', 'max:16', 'unique:citizens,phone_number'],
             'role' => ['string', 'in:Municipality Head,Municipality Deputy'],
             'province' => ['string', 'exists:provinces,name'],
-            'password' => ['string', 'confirmed', Password::defaults()]
+            'password' => ['nullable', 'string', 'confirmed', Password::defaults()]
         ]);
 
         // Resolve province ID
@@ -235,6 +235,9 @@ class OfficerController extends Controller
         // Hashify password
         if ($request->password) {
             $data['password'] = Hash::make($request->password);
+        }
+        else {
+            unset($data['password']);
         }
 
         // Update the information

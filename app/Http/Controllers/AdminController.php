@@ -120,13 +120,16 @@ class AdminController extends Controller
             'last_name' => ['string', 'max:255'],
             'email' => ['email', 'unique:citizens,email'],
             'phone_number' => ['string', 'max:16', 'unique:citizens,phone_number'],
-            'password' => ['string', 'confirmed', Password::defaults()],
+            'password' => ['nullable', 'string', 'confirmed', Password::defaults()],
             'profile_picture_path' => ['image', 'mimes:jpeg,png,jpg' ,'max:2048'],
         ]);
 
         // Hashify password
         if ($request->password) {
             $data['password'] = Hash::make($request->password);
+        }
+        else {
+            unset($data['password']);
         }
 
         // Update the information
