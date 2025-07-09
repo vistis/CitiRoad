@@ -40,7 +40,7 @@ class CitizenController extends Controller
     public function create(Request $request) {
         // Request rules
         $request->validate([
-            'id' => ['required', 'string', 'unique:citizens,id'],
+            'id' => ['required', 'integer', 'unique:citizens,id'],
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:citizens,email'],
@@ -92,7 +92,7 @@ class CitizenController extends Controller
     public function readOne(Request $request) {
         // Request rule
         $request->validate([
-            'id' => ['required', 'string', 'not_in:0', 'exists:citizens,id'], // Citizen ID
+            'id' => ['required', 'integer', 'not_in:0', 'exists:citizens,id'], // Citizen ID
         ]);
 
         // Get user
@@ -227,7 +227,7 @@ class CitizenController extends Controller
     public function resetPassword(Request $request) {
         // Request rule
         $request->validate([
-            'id' => ['required', 'string', 'exists:citizens,id'], // Ask for ID
+            'id' => ['required', 'integer', 'exists:citizens,id'], // Ask for ID
             'password' => ['required', 'string', 'confirmed', Password::defaults()] // New password
         ]);
 
@@ -249,7 +249,7 @@ class CitizenController extends Controller
     public function approve(Request $request) {
         // Request rule
         $request->validate([
-            'id' => ['required', 'string', 'not_in:0', 'exists:citizens,id'] // Citizen ID
+            'id' => ['required', 'integer', 'not_in:0', 'exists:citizens,id'] // Citizen ID
         ]);
 
         // Try to find the citizen
@@ -274,7 +274,7 @@ class CitizenController extends Controller
     public function reject(Request $request) {
         // Request rule
         $request->validate([
-            'id' => ['required', 'string', 'not_in:0', 'exists:citizens,id'], // Citizen ID
+            'id' => ['required', 'integer', 'not_in:0', 'exists:citizens,id'], // Citizen ID
         ]);
 
         // Try to find the citizen
@@ -303,7 +303,7 @@ class CitizenController extends Controller
     public function restrict(Request $request) {
         // Request rule
         $request->validate([
-            'id' => ['required', 'string', 'not_in:0', 'exists:citizens,id'] // Citizen ID
+            'id' => ['required', 'integer', 'not_in:0', 'exists:citizens,id'] // Citizen ID
         ]);
 
         // Try to find citizen
@@ -331,7 +331,7 @@ class CitizenController extends Controller
     //** UNRESTRICT ACCOUNT (FOR ADMIN USE) */
     public function unrestrict(Request $request) {
         $request->validate([
-            'id' => ['required', 'string', 'not_in:0', 'exists:citizens,id'], // Citizen ID
+            'id' => ['required', 'integer', 'not_in:0', 'exists:citizens,id'], // Citizen ID
         ]);
 
         // Try to find the citizen
@@ -356,7 +356,7 @@ class CitizenController extends Controller
     public function delete(Request $request) {
         // Request rule
         $request->validate([
-            'id' => ['required', 'string', 'not_in:0', 'exists:citizens,id'] // Citizen ID
+            'id' => ['required', 'integer', 'not_in:0', 'exists:citizens,id'] // Citizen ID
         ]);
 
         // Find citizen

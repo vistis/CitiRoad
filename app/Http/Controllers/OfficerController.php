@@ -39,7 +39,7 @@ class OfficerController extends Controller
     public function create(Request $request) {
         // Request rules
         $request->validate([
-            'id' => ['required', 'string', 'unique:officers,id'],
+            'id' => ['required', 'integer', 'unique:officers,id'],
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:officers,email'],
@@ -87,7 +87,7 @@ class OfficerController extends Controller
     public function readOne(Request $request) {
         // Request rule
         $request->validate([
-            'id' => ['required', 'string', 'exists:officers,id'],
+            'id' => ['required', 'integer', 'exists:officers,id'],
         ]);
 
         // Get user
@@ -214,7 +214,7 @@ class OfficerController extends Controller
     public function update(Request $request) {
         // Request rules
         $data = $request->validate([
-            'id' => ['string', 'required', 'exists:officers,id'],
+            'id' => ['integer', 'required', 'exists:officers,id'],
             'first_name' => ['string', 'max:255'],
             'last_name' => ['string', 'max:255'],
             'email' => ['email', 'unique:citizens,email'],
@@ -274,7 +274,7 @@ class OfficerController extends Controller
     public function delete(Request $request) {
         // Request rule
         $request->validate([
-            'id' => ['required', 'string', 'exists:officers,id'], // Officer ID
+            'id' => ['required', 'integer', 'exists:officers,id'], // Officer ID
         ]);
 
         // Find the requested officer

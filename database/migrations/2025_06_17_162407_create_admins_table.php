@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
 
         Schema::create('admins', function (Blueprint $table) {
-            $table->string('id')->primary();
+            $table->integer('id')->primary();
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();

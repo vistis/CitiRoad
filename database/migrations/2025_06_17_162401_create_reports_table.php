@@ -21,11 +21,11 @@ return new class extends Migration
             $table->foreign('province_id')->references('id')->on('provinces');
             $table->text('address');
             $table->longText('description');
-            $table->string('citizen_id')->nullable()->comment('Associate report to a citizen. One report belong to one citizen only. One citizen can have many reports.');
+            $table->integer('citizen_id')->nullable()->comment('Associate report to a citizen. One report belong to one citizen only. One citizen can have many reports.');
             $table->foreign('citizen_id')->references('id')->on('citizens');
             $table->timestamp('created_at');
             $table->timestamp('updated_at')->nullable();
-            $table->string('updated_by')->nullable();
+            $table->integer('updated_by')->nullable();
             $table->foreign('updated_by')->references('id')->on('officers');
             $table->text('remark')->nullable()->comment('Remark left by officers when they update status');
         });

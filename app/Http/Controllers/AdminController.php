@@ -15,7 +15,7 @@ class AdminController extends Controller
     //** CREATE ADMIN (NOT USED) */
     public function create(Request $request) {
         $request->validate([
-            'id' => ['required', 'string', 'unique:admins,id'],
+            'id' => ['required', 'integer', 'unique:admins,id'],
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:admins,email'],
@@ -54,7 +54,7 @@ class AdminController extends Controller
     public function readOne(Request $request) {
         // Request rule
         $request->validate([
-            'id' => ['required', 'string', 'exists:admins,id'],
+            'id' => ['required', 'integer', 'exists:admins,id'],
         ]);
 
         $admin = Admin::find($request->id);
