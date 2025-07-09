@@ -214,15 +214,21 @@ class OfficerController extends Controller
     public function update(Request $request) {
         // Request rules
         $data = $request->validate([
-            'id' => ['integer', 'required', 'exists:officers,id'],
-            'first_name' => ['string', 'max:255'],
-            'last_name' => ['string', 'max:255'],
-            'email' => ['email', 'unique:citizens,email'],
-            'phone_number' => ['string', 'max:16', 'unique:citizens,phone_number'],
-            'role' => ['string', 'in:Municipality Head,Municipality Deputy'],
-            'province' => ['string', 'exists:provinces,name'],
+            'id' => ['nullable', 'integer', 'required', 'exists:officers,id'],
+            'first_name' => ['nullable', 'string', 'max:255'],
+            'last_name' => ['nullable', 'string', 'max:255'],
+            'email' => ['nullable', 'email', 'unique:citizens,email'],
+            'phone_number' => ['nullable', 'string', 'max:16', 'unique:citizens,phone_number'],
+            'role' => ['nullable', 'string', 'in:Municipality Head,Municipality Deputy'],
+            'province' => ['nullable', 'string', 'exists:provinces,name'],
             'password' => ['nullable', 'string', 'confirmed', Password::defaults()]
         ]);
+
+        foreach ($data as $key => $value) {
+            if ($value === null) {
+                unset($data[$key]);
+            }
+        }
 
         // Resolve province ID
         if ($request->province) {

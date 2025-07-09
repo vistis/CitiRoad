@@ -160,61 +160,6 @@
                     <p>{{ $report->description ?? 'No detailed description available for this report.' }}</p>
                 </div>
 
-                {{-- Action Buttons (Proceed, Reject, Resolve, Reopen) --}}
-                {{-- These actions would typically be handled via forms or AJAX requests.
-                     Their visibility should depend on the authenticated user's role
-                     and the current status of the report, as per your controller logic. --}}
-                <div class="mt-8 pt-6 border-t border-gray-200 flex justify-end space-x-3">
-                    @if(Auth::guard('officer')->check())
-                        @php
-                            $officer = Auth::guard('officer')->user();
-                        @endphp
-
-                        {{-- Proceed Button --}}
-                        @if(($report->status == 'Reviewing' || $report->status == 'Investigating') && $officer->province_id == $report->province_id)
-                            <form action="{{ route('report.proceed') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="id" value="{{ $report->id }}">
-                                <input type="hidden" name="remark" value="Report status progressed by {{ $officer->first_name }} {{ $officer->last_name }}."> {{-- Consider a modal for remark input --}}
-                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium shadow-md transition-colors">
-                                    Proceed Report
-                                </button>
-                            </form>
-                        @endif
-
-                        {{-- Reject Button --}}
-                        @if(($report->status != 'Resolved' && $report->status != 'Rejected') && $officer->province_id == $report->province_id)
-                            <form action="{{ route('report.reject') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="id" value="{{ $report->id }}">
-                                <input type="hidden" name="remark" value="Report rejected by {{ $officer->first_name }} {{ $officer->last_name }}."> {{-- Consider a modal for remark input --}}
-                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg font-medium shadow-md transition-colors">
-                                    Reject Report
-                                </button>
-                            </form>
-                        @endif
-
-                        {{-- Resolve Button (Municipality Head only) --}}
-                        @if($report->status == 'Resolving' && $officer->role == 'Municipality Head' && $officer->province_id == $report->province_id)
-                            {{-- This would typically involve a form with image uploads --}}
-                            <a href="#" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-medium shadow-md transition-colors">
-                                Mark as Resolved
-                            </a>
-                        @endif
-
-                        {{-- Reopen Button (Municipality Head only) --}}
-                        @if(($report->status == 'Resolved' || $report->status == 'Rejected') && $officer->role == 'Municipality Head' && $officer->province_id == $report->province_id)
-                            <form action="{{ route('report.reopen') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="id" value="{{ $report->id }}">
-                                <input type="hidden" name="remark" value="Report reopened by {{ $officer->first_name }} {{ $officer->last_name }}."> {{-- Consider a modal for remark input --}}
-                                <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-lg font-medium shadow-md transition-colors">
-                                    Reopen Report
-                                </button>
-                            </form>
-                        @endif
-                    @endif
-                </div>
 
             </div>
         </main>

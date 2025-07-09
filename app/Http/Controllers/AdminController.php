@@ -116,13 +116,19 @@ class AdminController extends Controller
     public function update(Request $request) {
         // Request rules
         $data = $request->validate([
-            'first_name' => ['string', 'max:255'],
-            'last_name' => ['string', 'max:255'],
-            'email' => ['email', 'unique:citizens,email'],
-            'phone_number' => ['string', 'max:16', 'unique:citizens,phone_number'],
+            'first_name' => ['nullable', 'string', 'max:255'],
+            'last_name' => ['nullable', 'string', 'max:255'],
+            'email' => ['nullable', 'email', 'unique:citizens,email'],
+            'phone_number' => ['nullable', 'string', 'max:16', 'unique:citizens,phone_number'],
             'password' => ['nullable', 'string', 'confirmed', Password::defaults()],
             'profile_picture_path' => ['image', 'mimes:jpeg,png,jpg' ,'max:2048'],
         ]);
+
+        foreach ($data as $key => $value) {
+            if ($value === null) {
+                unset($data[$key]);
+            }
+        }
 
         // Hashify password
         if ($request->password) {
@@ -132,13 +138,15 @@ class AdminController extends Controller
             unset($data['password']);
         }
 
+        $user = $request->user();
+
         // Update the information
-        Admin::where('id', $request->user()->id)->update($data);
+        Admin::where('id', $user->id)->update($data);
 
         // If the request contains file
         if ($request->hasFile('profile_picture_path')) {
             // Generate filename
-            $filename = $request->id . '-' . time() . '.' . $request->profile_picture_path->extension();
+            $filename = $user->id . '-' . time() . '.' . $request->profile_picture_path->extension();
 
             // Move uploaded image to server storage with new name
             $request->profile_picture_path->move(public_path('storage/admins'), $filename);
@@ -147,12 +155,13 @@ class AdminController extends Controller
             $filepath = 'admins/' . $filename;
 
             // Delete old profile picture
-            $oldProfilePicturePath = Admin::find($request->id)->profile_picture_path;
-            Storage::disk('public')->delete($oldProfilePicturePath);
+            Storage::disk('public')->delete(Admin::where('id', $user->id)->first()->profile_picture_path);
 
-            Admin::where('id', $request->id)->update([
+            Admin::where('id', $user->id)->update([
                 'profile_picture_path' => $filepath
             ]);
+
+            // dd(Admin::where('id', $user->id)->first()->profile_picture_path);
         }
 
         return [

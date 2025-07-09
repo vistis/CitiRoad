@@ -221,27 +221,37 @@
                             <label for="profile_picture_path" class="block text-sm font-medium text-gray-700">
                                 Profile Picture
                             </label>
-                            <div class="relative">
-                                <input
-                                    type="file"
-                                    id="profile_picture_path"
-                                    name="profile_picture_path"
-                                    accept="image/*"
-                                    class="sr-only"
-                                    onchange="updateFileName(this)"
-                                >
+                            <div class="flex items-center space-x-4">
+                                {{-- Image preview container --}}
+                                <div id="image-preview-container">
+                                    <img id="profile-picture-preview" src="#" alt="Profile Picture Preview">
+                                    <div id="default-avatar-placeholder">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                </div>
+
+                                <div class="relative flex-1">
+                                    <input
+                                        type="file"
+                                        id="profile_picture_path"
+                                        name="profile_picture_path"
+                                        accept="image/*"
+                                        class="sr-only"
+                                        onchange="updateFileNameAndPreview(this)"
+                                    >
                                 <label for="profile_picture_path" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors cursor-pointer flex items-center justify-between bg-white hover:bg-gray-50">
-                                    <span id="file-name" class="text-gray-400">Upload profile photo</span>
-                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                                    </svg>
-                                </label>
-                            </div>
-                            @foreach ($errors->get('profile_picture_path') as $error)
-                                <p class="text-red-500 text-sm mt-1">{{ $error }}</p>
-                            @endforeach
+                                <span id="file-name" class="text-gray-400">Upload profile photo</span>
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                </svg>
+                            </label>
                         </div>
                     </div>
+                    @foreach ($errors->get('profile_picture_path') as $error)
+                        <p class="text-red-500 text-sm mt-1">{{ $error }}</p>
+                    @endforeach
+                </div>
+            </div>
 
                     <div class="mt-8 flex justify-center">
                         <button
@@ -277,28 +287,68 @@
     </div> -->
 
     <script>
-        // Toggle password visibility
-        function togglePasswordVisibility(inputId) {
-            const passwordInput = document.getElementById(inputId);
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-        }
+            // Toggle password visibility
+            function togglePasswordVisibility(inputId) {
+                const passwordInput = document.getElementById(inputId);
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
 
-        // Update file name display
-        function updateFileName(input) {
-            const fileName = input.files[0]?.name || 'Upload profile photo';
-            document.getElementById('file-name').textContent = fileName;
-        }
+                // Get the SVG element within the button
+                const iconSvg = passwordInput.nextElementSibling.querySelector('svg');
 
-        // Show success message
-        function showSuccessMessage() {
-            document.getElementById('success-message').classList.remove('hidden');
-        }
+                // Update the SVG paths for eye open/close
+                if (type === 'password') {
+                    // Show password icon (open eye)
+                    iconSvg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>';
+                } else {
+                    // Hide password icon (closed eye)
+                    iconSvg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.879 16.121A3 3 0 1110 12.879m3.879 3.242L15 21m-1-1l-3.879-3.879M6 6l-2 2"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>';
+                }
+            }
 
-        // Hide success message
-        function hideSuccess message() {
-            document.getElementById('success-message').classList.add('hidden');
-        }
-    </script>
+            // Combined function for file name and image preview
+            function updateFileNameAndPreview(input) {
+                const fileNameSpan = document.getElementById('file-name');
+                const previewImage = document.getElementById('profile-picture-preview');
+                const defaultAvatar = document.getElementById('default-avatar-placeholder');
+
+                if (input.files && input.files[0]) {
+                    const file = input.files[0];
+                    fileNameSpan.textContent = file.name; // Update file name
+
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        previewImage.style.display = 'block'; // Show the image
+                        defaultAvatar.style.display = 'none'; // Hide the placeholder
+                    };
+                    reader.readAsDataURL(file); // Read the file as a data URL
+                } else {
+                    fileNameSpan.textContent = 'Upload profile photo'; // Reset file name
+                    previewImage.style.display = 'none'; // Hide the image
+                    previewImage.src = '#'; // Clear the source
+                    defaultAvatar.style.display = 'flex'; // Show the placeholder
+                }
+            }
+
+            // Show success message (if you uncomment it later)
+            function showSuccessMessage() {
+                document.getElementById('success-message').classList.remove('hidden');
+            }
+
+            // Hide success message (if you uncomment it later)
+            function hideSuccessMessage() {
+                document.getElementById('success-message').classList.add('hidden');
+            }
+
+            // Initial check for 'old' profile picture if validation failed and redirected back
+            document.addEventListener('DOMContentLoaded', function() {
+                const fileInput = document.getElementById('profile_picture_path');
+                if (fileInput.files.length > 0) {
+                     updateFileNameAndPreview(fileInput);
+                }
+            });
+
+        </script>
 </body>
 </html>

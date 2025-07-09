@@ -51,35 +51,35 @@
                         {{-- First Name --}}
                         <div>
                             <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
-                            <input type="text" name="first_name" id="first_name" value="{{ old('first_name', $officer->first_name) }}" required
+                            <input type="text" name="first_name" id="first_name" }}"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
 
                         {{-- Last Name --}}
                         <div>
                             <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
-                            <input type="text" name="last_name" id="last_name" value="{{ old('last_name', $officer->last_name) }}" required
+                            <input type="text" name="last_name" id="last_name" }}"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
 
                         {{-- Email --}}
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                            <input type="email" name="email" id="email" value="{{ old('email', $officer->email) }}" required
+                            <input type="email" name="email" id="email" }}"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
 
                         {{-- Phone Number --}}
                         <div>
                             <label for="phone_number" class="block text-sm font-medium text-gray-700">Phone Number</label>
-                            <input type="text" name="phone_number" id="phone_number" value="{{ old('phone_number', $officer->phone_number) }}" required
+                            <input type="text" name="phone_number" id="phone_number" value="{{ old('phone_number', $officer->phone_number) }}"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
 
                         {{-- Role --}}
                         <div>
                             <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
-                            <select name="role" id="role" required
+                            <select name="role" id="role"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
                                 <option value="Municipality Head" {{ old('role', $officer->role) == 'Municipality Head' ? 'selected' : '' }}>Municipality Head</option>
                                 <option value="Municipality Deputy" {{ old('role', $officer->role) == 'Municipality Deputy' ? 'selected' : '' }}>Municipality Deputy</option>
@@ -89,7 +89,7 @@
                         {{-- Province --}}
                         <div>
                             <label for="province" class="block text-sm font-medium text-gray-700">Province</label>
-                            <select name="province" id="province" required
+                            <select name="province" id="province"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
                                 @foreach ($provinces as $province)
                                     <option value="{{ $province->name }}" {{ old('province', $officer->province) == $province->name ? 'selected' : '' }}>

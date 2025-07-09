@@ -28,7 +28,7 @@
                 {{-- Success and Error Messages --}}
                 {{-- IMPORTANT: Keep your Blade @if(session('success')) and @if(session('error')) for non-JS flows,
                             but add a new div for JS-driven messages. --}}
-                <div id="ajax-messages" class="mb-4"></div> {{-- THIS IS THE NEW DIV FOR JS MESSAGES --}}
+                <!-- <div id="ajax-messages" class="mb-4"></div> {{-- THIS IS THE NEW DIV FOR JS MESSAGES --}} -->
 
                 @if(session('success'))
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
@@ -67,7 +67,7 @@
                                 <a href="{{ route('admin.account.edit') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium shadow-md flex items-center">
                                     <i class="fas fa-edit mr-2"></i> Edit
                                 </a>
-                                <form method="POST" action="{{ route('logout') }}">
+                                <form action="{{ route('admin.logout') }}" method="POST">
                                     @csrf
                                     <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg font-medium shadow-md">
                                         Logout
@@ -110,7 +110,7 @@
     </div>
 
     {{-- Script to handle success messages from sessionStorage --}}
-    <script>
+    <!-- <script>
         window.addEventListener('load', function() {
             const successMessage = sessionStorage.getItem('adminAccountSuccessMessage');
             const ajaxMessagesDiv = document.getElementById('ajax-messages');
@@ -127,6 +127,6 @@
                 sessionStorage.removeItem('adminAccountSuccessMessage'); // Remove it so it doesn't reappear on refresh
             }
         });
-    </script>
+    </script> -->
 </body>
 </html>

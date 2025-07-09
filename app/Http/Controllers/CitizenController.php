@@ -193,11 +193,11 @@ class CitizenController extends Controller
     public function update(Request $request) {
         // Request rules
         $data = $request->validate([
-            'email' => ['email', 'unique:citizens,email'],
-            'phone_number' => ['string', 'max:16', 'unique:citizens,phone_number'],
-            'province' => ['string', 'exists:provinces,name'],
-            'address' => ['string'],
-            'password' => ['string', 'confirmed', Password::defaults()]
+            'email' => ['nullable', 'email', 'unique:citizens,email'],
+            'phone_number' => ['nullable', 'string', 'max:16', 'unique:citizens,phone_number'],
+            'province' => ['nullable', 'string', 'exists:provinces,name'],
+            'address' => ['nullable', 'string'],
+            'password' => ['nullable', 'string', 'confirmed', Password::defaults()]
         ]);
 
         // Resolve province ID
