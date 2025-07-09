@@ -112,7 +112,7 @@
       @include('components.sideBarItems', [
             'to' => route('admin.account'), // Assuming a 'profile' named route exists for the logged-in admin's profile
             'label' => Auth::user()->first_name . " " . Auth::user()->last_name,
-            'icon' => 'assets/icons/user.svg',
+            'icon' => 'storage/' . Auth::user()->profile_picture_path,
             'currentRoute' => $currentRoute ?? ''
       ])
     </nav>

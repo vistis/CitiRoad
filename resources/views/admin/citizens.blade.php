@@ -6,12 +6,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}"> {{-- Include CSRF token if forms are present --}}
     <title>Admin - Citizens</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="bg-gray-100 font-sans">
 
@@ -44,7 +41,7 @@
                     {{-- Filter, Sort, Order, Apply Group --}}
                     <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full md:w-auto">
                         {{-- Filter Select --}}
-                        <select name="filter" class="block w-full sm:w-auto border border-gray-300 rounded-md bg-white text-gray-700 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <select name="filter" class="block w-full sm:w-auto border border-gray-300 rounded-md bg-white text-gray-700 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="" {{ request('filter', '') === '' ? 'selected' : '' }}>All Statuses</option>
                             <option value="Pending" {{ request('filter') === 'Pending' ? 'selected' : '' }}>Pending</option>
                             <option value="Approved" {{ request('filter') === 'Approved' ? 'selected' : '' }}>Approved</option>
@@ -53,15 +50,14 @@
                         </select>
 
                         {{-- Sort Select --}}
-                        <select name="sort" class="block w-full sm:w-auto border border-gray-300 rounded-md bg-white text-gray-700 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <select name="sort" class="block w-full sm:w-auto border border-gray-300 rounded-md bg-white text-gray-700 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="created_at" {{ request('sort', 'created_at') === 'created_at' ? 'selected' : '' }}>Created At</option>
                             <option value="updated_at" {{ request('sort') === 'updated_at' ? 'selected' : '' }}>Updated At</option>
-                            <option value="first_name" {{ request('sort') === 'first_name' ? 'selected' : '' }}>First Name</option>
-                            <option value="last_name" {{ request('last_name') === 'last_name' ? 'selected' : '' }}>Last Name</option>
+                            <option value="first_name" {{ request('sort') === 'first_name' ? 'selected' : '' }}>Name</option>
                         </select>
 
                         {{-- Order Select --}}
-                        <select name="order" class="block w-full sm:w-auto border border-gray-300 rounded-md bg-white text-gray-700 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <select name="order" class="block w-full sm:w-auto border border-gray-300 rounded-md bg-white text-gray-700 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="asc" {{ request('order', 'desc') === 'asc' ? 'selected' : '' }}>Ascending</option>
                             <option value="desc" {{ request('order', 'desc') === 'desc' ? 'selected' : '' }}>Descending</option>
                         </select>

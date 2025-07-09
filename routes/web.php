@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 // Base URL
-// http://localhost:8000
+// http://localhost:8001
 
 // Dummy routes (redirect to admin dashboard)
 Route::get('/', function (Request $request) {
