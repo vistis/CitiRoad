@@ -127,11 +127,35 @@ Route::middleware('auth:admin')->group(function () {
         return view('admin.adminProfile', compact('admin'));
     })->name('admin.admin.show');
 
-    // Admin Account Route
+    // Admin Account Route (Current Admin's Own Profile)
     Route::get('/admin/account', function() {
         $admin = Auth::guard('admin')->user();
         return view('admin.account', compact('admin'));
     })->name('admin.account');
+
+    // ---
+    // NEW ROUTES FOR CURRENT ADMIN'S ACCOUNT EDITING
+    // ---
+
+    // Route to display the admin account edit form
+    Route::get('/admin/account/edit', function () {
+        $admin = Auth::guard('admin')->user(); // Get the currently authenticated admin
+        return view('admin.accountEdit', compact('admin'));
+    })->name('admin.account.edit');
+
+    // Route to handle the update of admin account information
+    // Route::put('/admin/account/update', [AdminController::class, 'update'])->name('admin.account.update');
+    //
+    Route::post('/admin/account/update', function(Request $request) {
+        $adminController = app(AdminController::class);
+        $response = $adminController->update($request);
+
+        if (isset($response['code']) && $response['code'] !== 200) {
+            return back()->withInput()->withErrors($response['message'] ?? 'Failed to update officer.');
+        }
+        return redirect()->route('admin.account', ['id' => $request->id])->with('success', 'Officer updated successfully.');
+    })->name('admin.account.update');
+
 
     // Officer Edit/Update Routes
     Route::get('/admin/officer/edit', function(Request $request) {
@@ -148,6 +172,10 @@ Route::middleware('auth:admin')->group(function () {
         return view('admin.officerEdit', compact('officer', 'provinces'));
     })->name('admin.officer.edit');
 
+    // This route is named `admin.officer.update` and uses `POST`.
+    // It calls `OfficerController::update`.
+    // The previous instruction had a comment about it updating the officer but redirecting to admin.account.
+    // I am leaving its original behavior as per your instruction "dont fix old things".
     Route::post('/admin/officer/update', function(Request $request) {
         $officerController = app(OfficerController::class);
         $response = $officerController->update($request);

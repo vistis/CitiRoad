@@ -77,7 +77,7 @@
 
                         {{-- Delete Report Button (Admin Only) --}}
                         @if(Auth::guard('admin')->check())
-                            <form action="{{ route('report.delete') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this report? This action cannot be undone.');">
+                            <form action="{{ route('admin.reports.delete') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this report? This action cannot be undone.');">
                                 @csrf
                                 @method('DELETE') {{-- Use DELETE method for deletion --}}
                                 <input type="hidden" name="id" value="{{ $report->id }}">
@@ -143,7 +143,9 @@
                         </div>
                         <div class="md:col-span-2">
                             <p class="text-sm text-gray-500 mb-1">Last Updated By</p>
+                             <a href="/admin/officer?id={{ $report->updated_by }}" class="block">
                             <p class="text-gray-800 font-medium">{{ $report->officer_first_name ?? 'N/A' }} {{ $report->officer_last_name ?? '' }}</p>
+                            </a>
                         </div>
                         <div class="md:col-span-2">
                             <p class="text-sm text-gray-500 mb-1">Remark</p>
