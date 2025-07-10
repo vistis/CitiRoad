@@ -15,9 +15,9 @@ return new class extends Migration
 
         Schema::create('officer_bookmarks', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('report_id');
+            $table->bigInteger('report_id');
             $table->foreign('report_id')->references('id')->on('reports');
-            $table->integer('officer_id');
+            $table->bigInteger('officer_id');
             $table->foreign('officer_id')->references('id')->on('officers');
         });
 
