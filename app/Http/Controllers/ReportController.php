@@ -84,7 +84,7 @@ class ReportController extends Controller
         // Store attached images
         foreach ($request->image_path as $imagePath) {
             // Generate filename
-            $filename = $report->id . '-' . $imageCounter . '-' . time() . '.' . $imagePath->extension();
+            $filename = $report->id . '-before-' . $imageCounter . '-' . time() . '.' . $imagePath->extension();
 
             // Move uploaded image to server storage with new name
             $imagePath->move(public_path('storage/reports'), $filename);
