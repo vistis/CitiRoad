@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
 
         Schema::create('report_images', function (Blueprint $table) {
-            $table->integer('id')->primary()->autoIncrement();
+            $table->bigInteger('id')->primary()->autoIncrement();
             $table->enum('type', ["Before","After"]);
             $table->string('image_path');
-            $table->integer('report_id');
+            $table->bigInteger('report_id');
             $table->foreign('report_id')->references('id')->on('reports');
         });
 
