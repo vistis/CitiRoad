@@ -10,19 +10,19 @@ CitiRoad is a transportation infrastructure integrity citizen engagement for Cam
 - A dashboard for citizens to create new reports and track their previous reports
 - A dashboard for officers to view and manage reports in their province
 
-> Responsibility of Puthiroth Kong (@kiminato-roto)
+> Responsibility of [Puthiroth Kong](https://github.com/kiminato-roto)
 
 ### Backend
 
 Dashboard for admins to manage all citizen accounts, officer accounts, and reports. Provide search and filter functionalities for an easier management experience.
 
-> Responsibility of Heang Piv Phour (@piru168)
+> Responsibility of [Heang Piv Phour](https://github.com/piru168)
 
 ### API
 
 Provides all platform functionalities as API endpoints with JSON responses.
 
-> Responsibility of Visoth Kim (@vistis)
+> Responsibility of [Visoth Kim](https://github.com/vistis)
 
 ## Platform Logic
 
