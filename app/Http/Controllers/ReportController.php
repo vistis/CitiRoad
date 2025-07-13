@@ -20,21 +20,30 @@ class ReportController extends Controller
             $provinceID = $request->user()->province_id;
 
             $query = DB::table('reports')->where('province_id', $provinceID)->get();
+
+            // Select active entries (not Resolved or Rejected)
+            $active = DB::table('reports')->where(function (Builder $query) {
+                $query->where('status', "Reviewing")
+                    ->orWhere('status', "Investigating")
+                    ->orWhere('status', "Resolving");
+                })
+                ->where('province_id', $provinceID)
+                ->count();
         }
         else {
             $query = DB::table('reports')->get();
+
+            // Select active entries (not Resolved or Rejected)
+            $active = DB::table('reports')->where(function (Builder $query) {
+                $query->where('status', "Reviewing")
+                    ->orWhere('status', "Investigating")
+                    ->orWhere('status', "Resolving");
+                })
+                ->count();
         }
 
         // Select all entries in the reports table
         $total = $query->count();
-
-        // Select active entries (not Resolved or Rejected)
-        $active = DB::table('reports')->where(function (Builder $query) {
-            $query->where('status', "Reviewing")
-                ->orWhere('status', "Investigating")
-                ->orWhere('status', "Resolving");
-            })
-            ->count();
 
         // Select Resolved entries
         $resolved = $query->where('status', "Resolved")->count();
