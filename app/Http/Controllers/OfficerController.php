@@ -291,6 +291,9 @@ class OfficerController extends Controller
             'updated_by' => null
         ]);
 
+        // Delete all their bookmarks
+        DB::table('officer_bookmarks')->where('officer_id', $request->id)->delete();
+
         // Delete picture off storage
         Storage::disk('public')->delete($officer->profile_picture_path);
 
