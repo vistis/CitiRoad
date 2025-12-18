@@ -30,7 +30,7 @@ class ReportController extends Controller
         $reports = Report::where('province_id', $user->province_id)
             ->orderBy('created_at', 'desc')
             ->get();
-            
+
         return view('officers.dashboard', compact('user', 'reports'));
 
     } else {
@@ -186,7 +186,7 @@ public function postResolvedUpdate(Request $request, $id)
             // Save the path in the database
             $report->reportImages()->create([
                 'image_path' => 'reports/' . $filename,
-                'type' => 'after',
+                'type' => 'After',
             ]);
         }
     }
