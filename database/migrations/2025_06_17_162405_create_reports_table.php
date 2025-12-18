@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
 
         Schema::create('reports', function (Blueprint $table) {
-            $table->bigInteger('id')->primary()->autoIncrement();
+            $table->id('id')->autoIncrement();
             $table->text('title');
-            $table->enum('status', ["Reviewing","Investigating","Rejected","Resolving","Resolved"]);
+            $table->enum('status', ["Reviewing","Investigating","Rejected","Resolving","Resolved"])->default("Reviewing");
             $table->integer('province_id')->comment('One-to-one');
             $table->foreign('province_id')->references('id')->on('provinces');
             $table->text('address');

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
 
         Schema::create('provinces', function (Blueprint $table) {
-            $table->integer('id')->primary()->comment('Code from http://db.ncdd.gov.kh/gazetteer/view/index.castle');
+            $table->id('id')->comment('Code from http://db.ncdd.gov.kh/gazetteer/view/index.castle');
             $table->string('name');
         });
 
