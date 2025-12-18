@@ -24,7 +24,7 @@
       <h1 class="text-3xl font-bold mb-2">Welcome, {{ auth('citizen')->user()->first_name }} {{ auth('citizen')->user()->last_name }}</h1>
       <p class="text-gray-600 mb-6">Have something to report?</p>
 
-      @if (auth('citizen')->user()->status !== 'Pending' && auth('citizen')->user()->status !== 'Restricted')
+      @if (auth('citizen')->user()->status === 'Approved')
         <a href="report" class="inline-flex items-center px-6 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-md transition">
           Make a New Report
         </a>
