@@ -27,8 +27,7 @@ return new class extends Migration
             $table->date('date_of_birth');
             $table->string('profile_picture_path')->comment('Image URL');
             $table->enum('gender', ["Male","Female","Prefer Not to Say"]);
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at')->nullable();
+            $table->timestamps();
             $table->string('remember_token')->nullable();
         });
 

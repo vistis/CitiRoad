@@ -23,8 +23,7 @@ return new class extends Migration
             $table->longText('description');
             $table->bigInteger('citizen_id')->nullable()->comment('Associate report to a citizen. One report belong to one citizen only. One citizen can have many reports.');
             $table->foreign('citizen_id')->references('id')->on('citizens');
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at')->nullable();
+            $table->timestamps();
             $table->bigInteger('updated_by')->nullable();
             $table->foreign('updated_by')->references('id')->on('officers');
             $table->text('remark')->nullable()->comment('Remark left by officers when they update status');
