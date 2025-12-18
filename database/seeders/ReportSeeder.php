@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Report;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ReportSeeder extends Seeder
 {
@@ -20,6 +21,7 @@ class ReportSeeder extends Seeder
             'description' => "The unpaved road in our village becomes almost impassable during the rainy season due to severe potholes and consistent flooding. Motorbikes and even cars frequently get stuck, and it's dangerous for children walking to school. Emergency services would struggle to access the area. Repairs are constantly needed, but the current patch-up work doesn't last.",
             'address' => "Phnum Sruoch District, Krang Dei Vay Commune, Krang Kor Village, Unnamed Street (Main Street that Cuts Through the Village)",
             'citizen_id' => 3,
+            'created_at' => now()
         ]);
 
         Report::create([
@@ -28,6 +30,7 @@ class ReportSeeder extends Seeder
             'description' => "The streetlights broke down, causing inconvenience to residents and making it difficult for them to navigate at night.",
             'address' => "Daun Penh Khan, Chey Chumneah Sangkat, Phum 2, Street Sisowath Quay",
             'citizen_id' => 1,
+            'created_at' => now()
         ]);
 
         Report::create([
@@ -36,6 +39,7 @@ class ReportSeeder extends Seeder
             'description' => "The intersection near the market experiences severe traffic jams daily, especially during peak hours, largely due to inadequate road capacity and disorganized turning lanes.",
             'address' => "Angk Snoul District, Baek Chan Commune, National Road 4 (Baek Chan Market)",
             'citizen_id' => 3,
+            'created_at' => now()
         ]);
 
         Report::create([
@@ -44,6 +48,7 @@ class ReportSeeder extends Seeder
             'description' => "There are no marked pedestrian crossings or traffic lights near the primary school in our village, making it extremely dangerous for children to cross the busy national road. Drivers frequently speed, and there have been several near-misses.",
             'address' => "Samraong Tong District, Voa sor, Chambak Village, National Road 4 (Chambak Primary School)",
             'citizen_id' => 3,
+            'created_at' => now()
         ]);
 
         Report::create([
@@ -52,6 +57,7 @@ class ReportSeeder extends Seeder
             'description' => "The traffic light at the intersection of Street 271 and Monivong Boulevard has been out of order for the past three days. This is a major intersection, and the lack of a functioning traffic light has led to extreme congestion, near-constant honking, and several minor accidents. It's incredibly dangerous for both drivers and pedestrians, and it needs urgent repair.",
             'address' => "Daun Penh Khan, Chey Chumneah Sangkat, Phum 2, Street Sisowath Quay",
             'citizen_id' => 1,
+            'created_at' => now()
         ]);
 
         // Add images
@@ -68,9 +74,9 @@ class ReportSeeder extends Seeder
         ]);
 
         // Set status
-        Report::where('id', 2)->update(['status' => 'Rejected', 'updated_by' => 3, 'remark' => "The streetlights were found to be functioning properly."]);
-        Report::where('id', 3)->update(['status' => 'Investigating', 'updated_by' => 5, 'remark' => "Investigation team dispatched."]);
-        Report::where('id', 4)->update(['status' => 'Resolving', 'updated_by' => 4, 'remark' => "Issue confirmed. Proceeding with repair."]);
-        Report::where('id', 5)->update(['status' => 'Resolved', 'updated_by' => 1, 'remark' => "Officially resolved."]);
+        Report::where('id', 2)->update(['status' => 'Rejected', 'updated_by' => 3, 'remark' => "The streetlights were found to be functioning properly.", 'updated_at' => now()]);
+        Report::where('id', 3)->update(['status' => 'Investigating', 'updated_by' => 5, 'remark' => "Investigation team dispatched.", 'updated_at' => now()]);
+        Report::where('id', 4)->update(['status' => 'Resolving', 'updated_by' => 4, 'remark' => "Issue confirmed. Proceeding with repair.", 'updated_at' => now()]);
+        Report::where('id', 5)->update(['status' => 'Resolved', 'updated_by' => 1, 'remark' => "Officially resolved.", 'updated_at' => now()]);
     }
 }
