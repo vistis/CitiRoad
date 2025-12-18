@@ -24,8 +24,7 @@ return new class extends Migration
             $table->integer('province_id')->comment('Define the jurisdiction. Reports are sent to the designated municipality.');
             $table->foreign('province_id')->references('id')->on('provinces');
             $table->string('profile_picture_path')->comment('Image URL');
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at')->nullable();
+            $table->timestamps();
             $table->string('remember_token')->nullable();
         });
 
