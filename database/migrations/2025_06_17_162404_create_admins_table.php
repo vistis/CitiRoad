@@ -21,8 +21,7 @@ return new class extends Migration
             $table->string('phone_number')->unique();
             $table->string('password');
             $table->string('profile_picture_path')->comment('Image URL');
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
+            $table->timestamps();
             $table->string('remember_token')->nullable();
         });
 
