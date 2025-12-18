@@ -14,17 +14,17 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
 
         Schema::create('reports', function (Blueprint $table) {
-            $table->bigInteger('id')->primary()->autoIncrement();
+            $table->id('id')->autoIncrement();
             $table->text('title');
-            $table->enum('status', ["Reviewing","Investigating","Rejected","Resolving","Resolved"]);
+            $table->enum('status', ["Reviewing","Investigating","Rejected","Resolving","Resolved"])->default("Reviewing");
             $table->integer('province_id')->comment('One-to-one');
             $table->foreign('province_id')->references('id')->on('provinces');
             $table->text('address');
             $table->longText('description');
             $table->bigInteger('citizen_id')->nullable()->comment('Associate report to a citizen. One report belong to one citizen only. One citizen can have many reports.');
             $table->foreign('citizen_id')->references('id')->on('citizens');
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->timestamp('created_at');
+            $table->timestamp('updated_at')->nullable();
             $table->bigInteger('updated_by')->nullable();
             $table->foreign('updated_by')->references('id')->on('officers');
             $table->text('remark')->nullable()->comment('Remark left by officers when they update status');

@@ -13,17 +13,20 @@ return new class extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::create('officers', function (Blueprint $table) {
-            $table->bigInteger('id')->primary()->comment('Government ID');
+        Schema::create('citizens', function (Blueprint $table) {
+            $table->id('id')->comment('National ID');
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
             $table->string('phone_number')->unique();
             $table->string('password');
-            $table->enum('role', ["Municipality Head","Municipality Deputy"]);
-            $table->integer('province_id')->comment('Define the jurisdiction. Reports are sent to the designated municipality.');
+            $table->enum('status', ["Pending","Approved","Restricted","Rejected"])->default('Pending');
+            $table->integer('province_id');
             $table->foreign('province_id')->references('id')->on('provinces');
+            $table->text('address');
+            $table->date('date_of_birth');
             $table->string('profile_picture_path')->comment('Image URL');
+            $table->enum('gender', ["Male","Female","Prefer Not to Say"]);
             $table->timestamp('created_at');
             $table->timestamp('updated_at')->nullable();
             $table->string('remember_token')->nullable();
@@ -37,6 +40,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('officers');
+        Schema::dropIfExists('citizens');
     }
 };

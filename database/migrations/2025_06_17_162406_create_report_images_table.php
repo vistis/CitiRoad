@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::create('officer_bookmarks', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('report_images', function (Blueprint $table) {
+            $table->id('id')->autoIncrement();
+            $table->enum('type', ["Before","After"]);
+            $table->string('image_path');
             $table->bigInteger('report_id');
             $table->foreign('report_id')->references('id')->on('reports');
-            $table->bigInteger('officer_id');
-            $table->foreign('officer_id')->references('id')->on('officers');
         });
 
         Schema::enableForeignKeyConstraints();
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('officer_bookmarks');
+        Schema::dropIfExists('report_images');
     }
 };

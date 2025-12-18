@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
 
         Schema::create('admin_bookmarks', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id('id');
             $table->bigInteger('report_id');
             $table->foreign('report_id')->references('id')->on('reports');
             $table->bigInteger('admin_id');
