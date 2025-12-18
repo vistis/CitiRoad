@@ -68,9 +68,9 @@ class ReportSeeder extends Seeder
         ]);
 
         // Set status
-        Report::where('id', 2)->update(['status' => 'Rejected', 'updated_by' => 3, 'Remark' => "The streetlights were found to be functioning properly."]);
-        Report::where('id', 3)->update(['status' => 'Investigating', 'updated_by' => 5, 'Remark' => "Investigation team dispatched."]);
-        Report::where('id', 4)->update(['status' => 'Resolving', 'updated_by' => 4, 'Remark' => "Issue confirmed. Proceeding with repair."]);
-        Report::where('id', 5)->update(['status' => 'Resolved', 'updated_by' => 1, 'Remark' => "Officially resolved."]);
+        Report::where('id', 2)->update(['status' => 'Rejected', 'updated_by' => 3, 'remark' => "The streetlights were found to be functioning properly."]);
+        Report::where('id', 3)->update(['status' => 'Investigating', 'updated_by' => 5, 'remark' => "Investigation team dispatched."]);
+        Report::where('id', 4)->update(['status' => 'Resolving', 'updated_by' => 4, 'remark' => "Issue confirmed. Proceeding with repair."]);
+        Report::where('id', 5)->update(['status' => 'Resolved', 'updated_by' => 1, 'remark' => "Officially resolved."]);
     }
 }
