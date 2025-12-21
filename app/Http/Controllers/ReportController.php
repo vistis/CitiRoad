@@ -262,16 +262,16 @@ class ReportController extends Controller
                 DB::raw('MIN(report_images.image_path) as image_path'), // Select only one picture for preview
             )
             ->groupBy(
-                'id',
+                'reports.id',
                 'title',
-                'status',
+                'reports.status',
                 'province',
-                'address',
-                'created_at',
+                'reports.address',
+                'reports.created_at',
                 'citizen_id',
                 'citizen_first_name',
                 'citizen_last_name',
-                'updated_at',
+                'reports.updated_at',
                 'updated_by',
                 'officer_first_name',
                 'officer_last_name'
