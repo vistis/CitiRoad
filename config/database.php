@@ -45,7 +45,7 @@ return [
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
-            # 'host' => env('DB_HOST', '127.0.0.1'),
+            // 'host' => env('DB_HOST', '127.0.0.1'),
             'read' => [
                 'host' => env('DB_READ_HOST', '127.0.0.1'),
             ],
@@ -71,7 +71,7 @@ return [
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),
-            # 'host' => env('DB_HOST', '127.0.0.1'),
+            // 'host' => env('DB_HOST', '127.0.0.1'),
             'read' => [
                 'host' => env('DB_READ_HOST', '127.0.0.1'),
             ],
@@ -97,7 +97,7 @@ return [
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DB_URL'),
-            # 'host' => env('DB_HOST', '127.0.0.1'),
+            // 'host' => env('DB_HOST', '127.0.0.1'),
             'read' => [
                 'host' => env('DB_READ_HOST', '127.0.0.1'),
             ],
