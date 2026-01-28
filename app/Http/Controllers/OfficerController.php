@@ -35,7 +35,7 @@ class OfficerController extends Controller
         ];
     }
 
-    //** CREATE OFFCIER (ADMIN ONLY) */
+    //** CREATE OFFICER (ADMIN ONLY) */
     public function create(Request $request) {
         // Request rules
         $request->validate([
@@ -53,8 +53,8 @@ class OfficerController extends Controller
         // Generate filename
         $filename = $request->id . '-' . time() . '.' . $request->profile_picture_path->extension();
 
-        // Move uploaded image to server storage with new name
-        $request->profile_picture_path->move(public_path('storage/officers'), $filename);
+        // Store image
+        Storage::putFileAs('officers', $request->file('profile_picture_path'), $filename);
 
         // Set file path
         $filepath = 'officers/' . $filename;
@@ -83,7 +83,7 @@ class OfficerController extends Controller
         ];
     }
 
-    //** READ INFORMATION OF A SPCIFIED OFFICER (FOR OFFICERS AND ADMINS) *//
+    //** READ INFORMATION OF A SPECIFIED OFFICER (FOR OFFICERS AND ADMINS) *//
     public function readOne(Request $request) {
         // Request rule
         $request->validate([
@@ -183,7 +183,7 @@ class OfficerController extends Controller
                 'provinces.name as province',
                 'officers.profile_picture_path as profile_picture_path'
             )
-            ->whereAny(['officers.first_name', 'officers.last_name', 'provinces.name'], 'like', $search)
+            ->whereAny(['officers.first_name', 'officers.last_name'], 'like', $search)
             ->orderBy($sort, $order)
             ->get();
 
@@ -214,21 +214,15 @@ class OfficerController extends Controller
     public function update(Request $request) {
         // Request rules
         $data = $request->validate([
-            'id' => ['nullable', 'integer', 'required', 'exists:officers,id'],
-            'first_name' => ['nullable', 'string', 'max:255'],
-            'last_name' => ['nullable', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'unique:citizens,email'],
-            'phone_number' => ['nullable', 'string', 'max:16', 'unique:citizens,phone_number'],
-            'role' => ['nullable', 'string', 'in:Municipality Head,Municipality Deputy'],
-            'province' => ['nullable', 'string', 'exists:provinces,name'],
-            'password' => ['nullable', 'string', 'confirmed', Password::defaults()]
+            'id' => ['integer', 'required', 'exists:officers,id'],
+            'first_name' => ['string', 'max:255'],
+            'last_name' => ['string', 'max:255'],
+            'email' => ['email', 'unique:citizens,email'],
+            'phone_number' => ['string', 'max:16', 'unique:citizens,phone_number'],
+            'role' => ['string', 'in:Municipality Head,Municipality Deputy'],
+            'province' => ['string', 'exists:provinces,name'],
+            'password' => ['string', 'confirmed', Password::defaults()]
         ]);
-
-        foreach ($data as $key => $value) {
-            if ($value === null) {
-                unset($data[$key]);
-            }
-        }
 
         // Resolve province ID
         if ($request->province) {
@@ -242,9 +236,6 @@ class OfficerController extends Controller
         if ($request->password) {
             $data['password'] = Hash::make($request->password);
         }
-        else {
-            unset($data['password']);
-        }
 
         // Update the information
         Officer::where('id', $request->id)->update($data);
@@ -254,15 +245,15 @@ class OfficerController extends Controller
             // Generate filename
             $filename = $request->id . '-' . time() . '.' . $request->profile_picture_path->extension();
 
-            // Move uploaded image to server storage with new name
-            $request->profile_picture_path->move(public_path('storage/officers'), $filename);
+            // Store image
+            Storage::putFileAs('officers', $request->file('profile_picture_path'), $filename);
 
             // Set file path
             $filepath = 'officers/' . $filename;
 
             // Delete old profile picture
             $oldProfilePicturePath = Officer::find($request->id)->profile_picture_path;
-            Storage::disk('public')->delete($oldProfilePicturePath);
+            Storage::delete($oldProfilePicturePath);
 
             Officer::where('id', $request->id)->update([
                 'profile_picture_path' => $filepath
@@ -295,7 +286,7 @@ class OfficerController extends Controller
         DB::table('officer_bookmarks')->where('officer_id', $request->id)->delete();
 
         // Delete picture off storage
-        Storage::disk('public')->delete($officer->profile_picture_path);
+        Storage::delete($officer->profile_picture_path);
 
         // Officer found, proceed with deletion
         $officer->delete();

@@ -56,8 +56,8 @@ class CitizenController extends Controller
         // Generate filename
         $filename = $request->id . '-' . time() . '.' . $request->profile_picture_path->extension();
 
-        // Move uploaded image to server storage with new name
-        $request->profile_picture_path->move(public_path('storage/citizens'), $filename);
+        // Store image
+        Storage::putFileAs('citizens', $request->file('profile_picture_path'), $filename);
 
         // Set file path
         $filepath = 'citizens/' . $filename;
@@ -167,11 +167,11 @@ class CitizenController extends Controller
             ->get();
 
         // Get filter option from request
-                if ($request->filter) {
-                    if ($request->filter == "Pending" || $request->filter == "Active" || $request->filter == "Rejected" || $request->filter == "Restricted") {
-                        $citizens = $citizens->where('status', $request->filter);
-                    }
-                }
+        if ($request->filter) {
+            if ($request->filter == "Pending" || $request->filter == "Active" || $request->filter == "Rejected" || $request->filter == "Restricted") {
+                $citizens = $citizens->where('status', $request->filter);
+            }
+        }
 
         // Get pending accounts
         $pending = $citizens->where('status', "Pending");
@@ -193,11 +193,11 @@ class CitizenController extends Controller
     public function update(Request $request) {
         // Request rules
         $data = $request->validate([
-            'email' => ['nullable', 'email', 'unique:citizens,email'],
-            'phone_number' => ['nullable', 'string', 'max:16', 'unique:citizens,phone_number'],
-            'province' => ['nullable', 'string', 'exists:provinces,name'],
-            'address' => ['nullable', 'string'],
-            'password' => ['nullable', 'string', 'confirmed', Password::defaults()]
+            'email' => ['email', 'unique:citizens,email'],
+            'phone_number' => ['string', 'max:16', 'unique:citizens,phone_number'],
+            'province' => ['string', 'exists:provinces,name'],
+            'address' => ['string'],
+            'password' => ['string', 'confirmed', Password::defaults()]
         ]);
 
         // Resolve province ID
@@ -366,7 +366,7 @@ class CitizenController extends Controller
         DB::table('reports')->where('citizen_id', $citizen->id)->update(['citizen_id' => 0]);
 
         // Delete picture off storage
-        Storage::disk('public')->delete($citizen->profile_picture_path);
+        Storage::delete($citizen->profile_picture_path);
 
         // Delete the account
         $citizen->delete();
