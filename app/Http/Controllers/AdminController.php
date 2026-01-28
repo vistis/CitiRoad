@@ -131,9 +131,6 @@ class AdminController extends Controller
 
         $user = $request->user();
 
-        // Update the information
-        Admin::where('id', $user->id)->update($data);
-
         // If the request contains file
         if ($request->hasFile('profile_picture_path')) {
             // Generate filename
@@ -151,7 +148,12 @@ class AdminController extends Controller
             Admin::where('id', $user->id)->update([
                 'profile_picture_path' => $filepath
             ]);
+
+            unset($data['profile_picture_path']);
         }
+
+        // Update the information
+        Admin::where('id', $user->id)->update($data);
 
         return [
             'message' => "Account information updated",

@@ -214,13 +214,12 @@ class CitizenController extends Controller
             $data['password'] = Hash::make($request->password);
         }
 
-        // Update the information
-        Citizen::where('id', $request->user()->id)->update($data);
+        $user = $request->user();
 
         // If the request contains file
         if ($request->hasFile('profile_picture_path')) {
             // Generate filename
-            $filename = $request->id . '-' . time() . '.' . $request->profile_picture_path->extension();
+            $filename = $user->id . '-' . time() . '.' . $request->profile_picture_path->extension();
 
             // Store image
             Storage::putFileAs('citizens', $request->file('profile_picture_path'), $filename);
@@ -229,13 +228,17 @@ class CitizenController extends Controller
             $filepath = 'citizens/' . $filename;
 
             // Delete old profile picture
-            $oldProfilePicturePath = Citizen::find($request->id)->profile_picture_path;
-            Storage::delete($oldProfilePicturePath);
+            Storage::delete($user->profile_picture_path);
 
-            Citizen::where('id', $request->id)->update([
+            Citizen::where('id', $user->id)->update([
                 'profile_picture_path' => $filepath
             ]);
+
+            unset($data['profile_picture_path']);
         }
+
+        // Update the information
+        Citizen::where('id', $user->id)->update($data);
 
         // Response
         return [
