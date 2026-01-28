@@ -238,9 +238,6 @@ class OfficerController extends Controller
             $data['password'] = Hash::make($request->password);
         }
 
-        // Update the information
-        Officer::where('id', $request->id)->update($data);
-
         // If the request contains file
         if ($request->hasFile('profile_picture_path')) {
             // Generate filename
@@ -253,13 +250,17 @@ class OfficerController extends Controller
             $filepath = 'officers/' . $filename;
 
             // Delete old profile picture
-            $oldProfilePicturePath = Officer::find($request->id)->profile_picture_path;
-            Storage::delete($oldProfilePicturePath);
+            Storage::delete(Officer::find($request->id)->profile_picture_path);
 
             Officer::where('id', $request->id)->update([
                 'profile_picture_path' => $filepath
             ]);
+
+            unset($data['profile_picture_path']);
         }
+
+        // Update the information
+        Officer::where('id', $request->id)->update($data);
 
         // Response
         return [
