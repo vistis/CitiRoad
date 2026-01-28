@@ -91,13 +91,12 @@ class ReportController extends Controller
         $imageCounter = 0;
 
         // Store attached images
-        foreach ($request->image_path as $imagePath) {
+        foreach ($request->file('image_path') as $image) {
             // Generate filename
-            $filename = $report->id . '-before-' . $imageCounter . '-' . time() . '.' . $imagePath->extension();
+            $filename = $report->id . '-before-' . $imageCounter . '-' . time() . '.' . $image->extension();
 
-            // Move uploaded image to server storage with new name
-            $imagePath->move(public_path('storage/reports'), $filename);
-            // Storage::put('reports/' . $filename, file_get_contents($imagePath));
+            // Store image
+            Storage::putFileAs('reports', $image, $filename);
 
             // Set file path
             $filepath = 'reports/' . $filename;
@@ -496,12 +495,12 @@ class ReportController extends Controller
         $imageCounter = 0;
 
         // Store proof of resolution
-        foreach ($request->image_path as $imagePath) {
+        foreach ($request->image_path as $image) {
             // Generate filename
-            $filename = $report->id . '-after-' . $imageCounter . '-' . time() . '.' . $imagePath->extension();
+            $filename = $report->id . '-after-' . $imageCounter . '-' . time() . '.' . $image->extension();
 
-            // Move uploaded image to server storage with new name
-            $imagePath->move(public_path('storage/reports'), $filename);
+            // Store image
+            Storage::putFileAs('reports', $image, $filename);
 
             // Set file path
             $filepath = 'reports/' . $filename;
@@ -559,7 +558,7 @@ class ReportController extends Controller
             // Delete old proof images
             $images = DB::table('report_images')->where('report_id', $report->id)->where('type', 'After')->pluck('image_path')->toArray();
             foreach ($images as $image) {
-                Storage::disk('public')->delete($image);
+                Storage::delete($image);
             }
             DB::table('report_images')->where('report_id', $report->id)->where('type', 'After')->delete();
 
@@ -591,7 +590,7 @@ class ReportController extends Controller
         // Delete associated images
         $images = DB::table('report_images')->where('report_id', $report->id)->pluck('image_path')->toArray();
         foreach ($images as $image) {
-            Storage::disk('public')->delete($image);
+            Storage::delete($image);
         }
         DB::table('report_images')->where('report_id', $report->id)->delete();
 

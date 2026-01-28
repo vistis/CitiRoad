@@ -53,8 +53,8 @@ class OfficerController extends Controller
         // Generate filename
         $filename = $request->id . '-' . time() . '.' . $request->profile_picture_path->extension();
 
-        // Move uploaded image to server storage with new name
-        $request->profile_picture_path->move(public_path('storage/officers'), $filename);
+        // Store image
+        Storage::putFileAs('officers', $request->file('profile_picture_path'), $filename);
 
         // Set file path
         $filepath = 'officers/' . $filename;
@@ -221,7 +221,8 @@ class OfficerController extends Controller
             'phone_number' => ['string', 'max:16', 'unique:citizens,phone_number'],
             'role' => ['string', 'in:Municipality Head,Municipality Deputy'],
             'province' => ['string', 'exists:provinces,name'],
-            'password' => ['string', 'confirmed', Password::defaults()]
+            'password' => ['string', 'confirmed', Password::defaults()],
+            'profile_picture_path' => ['image', 'mimes:jpeg,png,jpg' ,'max:2048']
         ]);
 
         // Resolve province ID
@@ -245,15 +246,15 @@ class OfficerController extends Controller
             // Generate filename
             $filename = $request->id . '-' . time() . '.' . $request->profile_picture_path->extension();
 
-            // Move uploaded image to server storage with new name
-            $request->profile_picture_path->move(public_path('storage/officers'), $filename);
+            // Store image
+            Storage::putFileAs('officers', $request->file('profile_picture_path'), $filename);
 
             // Set file path
             $filepath = 'officers/' . $filename;
 
             // Delete old profile picture
             $oldProfilePicturePath = Officer::find($request->id)->profile_picture_path;
-            Storage::disk('public')->delete($oldProfilePicturePath);
+            Storage::delete($oldProfilePicturePath);
 
             Officer::where('id', $request->id)->update([
                 'profile_picture_path' => $filepath
@@ -286,7 +287,7 @@ class OfficerController extends Controller
         DB::table('officer_bookmarks')->where('officer_id', $request->id)->delete();
 
         // Delete picture off storage
-        Storage::disk('public')->delete($officer->profile_picture_path);
+        Storage::delete($officer->profile_picture_path);
 
         // Officer found, proceed with deletion
         $officer->delete();

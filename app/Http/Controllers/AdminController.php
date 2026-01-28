@@ -27,8 +27,8 @@ class AdminController extends Controller
         // Generate filename
         $filename = $request->id . '-' . time() . '.' . $request->profile_picture_path->extension();
 
-        // Move uploaded image to server storage with new name
-        $request->profile_picture_path->move(public_path('storage/admins'), $filename);
+        // Store image
+        Storage::putFileAs('admins', $request->file('profile_picture_path'), $filename);
 
         // Set file path
         $filepath = 'admins/' . $filename;
@@ -121,7 +121,7 @@ class AdminController extends Controller
             'email' => ['email', 'unique:citizens,email'],
             'phone_number' => ['string', 'max:16', 'unique:citizens,phone_number'],
             'password' => ['string', 'confirmed', Password::defaults()],
-            'profile_picture_path' => ['image', 'mimes:jpeg,png,jpg' ,'max:2048'],
+            'profile_picture_path' => ['image', 'mimes:jpeg,png,jpg' ,'max:2048']
         ]);
 
         // Hashify password
@@ -139,20 +139,18 @@ class AdminController extends Controller
             // Generate filename
             $filename = $user->id . '-' . time() . '.' . $request->profile_picture_path->extension();
 
-            // Move uploaded image to server storage with new name
-            $request->profile_picture_path->move(public_path('storage/admins'), $filename);
+            // Store image
+            Storage::putFileAs('admins', $request->file('profile_picture_path'), $filename);
 
             // Set file path
             $filepath = 'admins/' . $filename;
 
             // Delete old profile picture
-            Storage::disk('public')->delete($user->profile_picture_path);
+            Storage::delete($user->profile_picture_path);
 
             Admin::where('id', $user->id)->update([
                 'profile_picture_path' => $filepath
             ]);
-
-            // dd(Admin::where('id', $user->id)->first()->profile_picture_path);
         }
 
         return [
