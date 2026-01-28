@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Province;
@@ -70,7 +71,7 @@ class ReportController extends Controller
             if ($request->hasFile('picture')) {
         foreach ($request->file('picture') as $image) {
     $filename = Str::uuid()->toString() . '.' . $image->getClientOriginalExtension();
-    $image->storeAs('reports', $filename, 'public');
+    Storage::putFileAs('reports', $image, $filename);
 
     ReportImage::create([
         'report_id'   => $report->id,
@@ -181,7 +182,7 @@ public function postResolvedUpdate(Request $request, $id)
             $filename = Str::uuid()->toString() . '.' . $image->getClientOriginalExtension();
 
             // Store the file in the 'reports' directory in the 'public' disk
-            $image->storeAs('reports', $filename, 'public');
+            Storage::putFileAs('reports', $image, $filename);
 
             // Save the path in the database
             $report->reportImages()->create([

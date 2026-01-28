@@ -10,8 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-
-
+use Illuminate\Support\Facades\Storage;
 
 class CitizenController extends Controller
 {
@@ -38,7 +37,7 @@ class CitizenController extends Controller
         ]);
 
         // Store image
-        $imagePath = $request->file('profile_picture')->store('citizens', 'public');
+        $imagePath = Storage::putFile('citizens', $request->file('profile_picture'));
 
         $citizen = Citizen::create([
             'id' => $validated['id'],

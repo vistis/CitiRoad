@@ -9,7 +9,6 @@ use App\Models\Report;
 use App\Models\Province;
 use App\Models\Citizen;
 
-
 class OfficerController extends Controller
 {
 
@@ -68,7 +67,7 @@ public function showCitizenProfile($id)
     {
         $citizen = Citizen::findOrFail($id);
         $officer = auth()->user();
-    
+
     // Get reports from this citizen that match the officer's province
     $reports = $citizen->reports()
         ->where('province_id', $officer->province_id)
