@@ -221,7 +221,8 @@ class OfficerController extends Controller
             'phone_number' => ['string', 'max:16', 'unique:citizens,phone_number'],
             'role' => ['string', 'in:Municipality Head,Municipality Deputy'],
             'province' => ['string', 'exists:provinces,name'],
-            'password' => ['string', 'confirmed', Password::defaults()]
+            'password' => ['string', 'confirmed', Password::defaults()],
+            'profile_picture_path' => ['image', 'mimes:jpeg,png,jpg' ,'max:2048']
         ]);
 
         // Resolve province ID

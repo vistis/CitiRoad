@@ -197,7 +197,8 @@ class CitizenController extends Controller
             'phone_number' => ['string', 'max:16', 'unique:citizens,phone_number'],
             'province' => ['string', 'exists:provinces,name'],
             'address' => ['string'],
-            'password' => ['string', 'confirmed', Password::defaults()]
+            'password' => ['string', 'confirmed', Password::defaults()],
+            'profile_picture_path' => ['image', 'mimes:jpeg,png,jpg' ,'max:2048']
         ]);
 
         // Resolve province ID
@@ -215,6 +216,26 @@ class CitizenController extends Controller
 
         // Update the information
         Citizen::where('id', $request->user()->id)->update($data);
+
+        // If the request contains file
+        if ($request->hasFile('profile_picture_path')) {
+            // Generate filename
+            $filename = $request->id . '-' . time() . '.' . $request->profile_picture_path->extension();
+
+            // Store image
+            Storage::putFileAs('citizens', $request->file('profile_picture_path'), $filename);
+
+            // Set file path
+            $filepath = 'citizens/' . $filename;
+
+            // Delete old profile picture
+            $oldProfilePicturePath = Citizen::find($request->id)->profile_picture_path;
+            Storage::delete($oldProfilePicturePath);
+
+            Citizen::where('id', $request->id)->update([
+                'profile_picture_path' => $filepath
+            ]);
+        }
 
         // Response
         return [
