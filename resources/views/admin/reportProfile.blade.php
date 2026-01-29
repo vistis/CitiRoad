@@ -100,7 +100,7 @@
                         <h2 class="text-xl font-semibold text-gray-800 mb-3">Before</h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 report-image-grid mb-6">
                             @foreach($beforeImages as $image)
-                                <img src="{{ asset('storage/' . $image->image_path) }}" alt="Before Image">
+                                <img src="{{ Storage::url($image->image_path) }}" alt="Before Image">
                             @endforeach
                         </div>
                     @endif
@@ -109,7 +109,7 @@
                         <h2 class="text-xl font-semibold text-gray-800 mb-3">After</h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 report-image-grid mb-6">
                             @foreach($afterImages as $image)
-                                <img src="{{ asset('storage/' . $image->image_path) }}" alt="After Image">
+                                <img src="{{ Storage::url($image->image_path) }}" alt="After Image">
                             @endforeach
                         </div>
                     @endif

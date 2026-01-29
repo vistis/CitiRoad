@@ -42,9 +42,8 @@
                 {{-- Profile Header Section --}}
                 <div class="bg-white p-8 rounded-lg shadow-md flex flex-col md:flex-row items-center gap-6 mb-8 mt-4">
                     {{-- Profile Image --}}
-                    <img src="{{ asset('storage/' . ($data['account']->profile_picture_path ?? '')) }}"
+                    <img src="{{ Storage::url($data['account']->profile_picture_path ?? '') }}"
                          alt="{{ $data['account']->first_name ?? 'Citizen' }} {{ $data['account']->last_name ?? '' }} Photo"
-                         onerror="this.onerror=null;this.src='https://placehold.co/96x96/cccccc/ffffff?text=User';"
                          class="w-24 h-24 rounded-full border-4 border-gray-200 object-cover flex-shrink-0">
 
                     <div class="flex-1 flex flex-col md:flex-row md:items-center justify-between text-center md:text-left">
@@ -183,12 +182,14 @@
                     <h3 class="text-xl font-semibold text-gray-800 mb-4 mt-8">Reports Filed by {{ $data['account']->first_name }}</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         @foreach($data['reports'] as $report)
-                            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                                <p class="text-lg font-semibold">{{ $report->title }}</p>
-                                <p class="text-sm text-gray-600">Status: {{ $report->status }}</p>
-                                <p class="text-sm text-gray-600">Filed On: {{ \Carbon\Carbon::parse($report->created_at)->format('F j, Y') }}</p>
-                                <a href="{{ route('admin.report.show', ['id' => $report->id]) }}" class="text-blue-500 hover:underline text-sm mt-2 block">View Report</a>
-                            </div>
+                            <a href="{{ route('admin.report.show', ['id' => $report->id]) }}">
+                                <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                                    <img src="{{ Storage::url($report->image_path) }}" alt="Report Image" class="w-full h-48 object-cover rounded-lg mb-2" />
+                                    <p class="text-lg font-semibold">{{ $report->title }}</p>
+                                    <p class="text-sm text-gray-600">Status: {{ $report->status }}</p>
+                                    <p class="text-sm text-gray-600">Filed On: {{ \Carbon\Carbon::parse($report->created_at)->format('F j, Y') }}</p>
+                                </div>
+                            </a>
                         @endforeach
                     </div>
                 @else

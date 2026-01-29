@@ -60,7 +60,7 @@
 
                     <div class="flex flex-col items-center mb-6">
                         <label for="profile_picture_path" class="cursor-pointer">
-                            <img id="profile_picture_preview" src="{{ $admin->profile_picture_path ? asset('storage/' . $admin->profile_picture_path) : asset('images/default-profile.png') }}" alt="Profile Picture" class="profile-picture-preview mb-4">
+                            <img id="profile_picture_preview" src="{{ Storage::url($admin->profile_picture_path) }}" alt="Profile Picture" class="profile-picture-preview mb-4">
                             <span class="text-blue-600 hover:underline">Change Profile Picture</span>
                         </label>
                         <input type="file" name="profile_picture_path" id="profile_picture_path" class="hidden" onchange="previewImage(event)">

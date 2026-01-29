@@ -5,9 +5,8 @@
     {{-- Make the left section (profile info) a clickable link --}}
     <a href="{{ route('admin.citizens.show', ['id' => $citizen->id]) }}" class="flex items-center space-x-4 flex-grow">
         <img class="h-12 w-12 rounded-full object-cover"
-             src="{{ asset('storage/' . $citizen->profile_picture_path) }}"
+             src="{{ Storage::url($citizen->profile_picture_path) }}"
              alt="{{ $citizen->first_name }} {{ $citizen->last_name }}'s profile picture"
-             onerror="this.onerror=null;this.src='https://placehold.co/48x48/cccccc/ffffff?text=User';"
         >
         <div>
             <h3 class="text-lg font-semibold text-gray-900">

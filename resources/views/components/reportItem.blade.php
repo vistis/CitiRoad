@@ -24,7 +24,7 @@
     <div class="flex items-start space-x-4">
         <div class="flex-shrink-0">
             @if($image_path)
-                <img src="{{ asset('storage/' . $image_path) }}" alt="Report Image" class="w-16 h-16 object-cover rounded-lg">
+                <img src="{{ Storage::url($image_path) }}" alt="Report Image" class="w-16 h-16 object-cover rounded-lg">
             @else
                 <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">
                     <i class="fas fa-image text-xl"></i>

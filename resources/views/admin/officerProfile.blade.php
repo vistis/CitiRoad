@@ -28,9 +28,8 @@
         {{-- Profile Header --}}
         <div class="flex flex-col md:flex-row items-center gap-6 mb-8 mt-4">
             {{-- Profile Image: Using profile_picture_path from the controller's data --}}
-            <img src="{{ asset('storage/' . ($officer->profile_picture_path ?? '')) }}"
+            <img src="{{ Storage::url($officer->profile_picture_path ?? '') }}"
                  alt="{{ $officer->first_name ?? 'Officer' }} {{ $officer->last_name ?? '' }} Photo"
-                 onerror="this.onerror=null;this.src='https://placehold.co/96x96/cccccc/ffffff?text=Officer';"
                  class="w-24 h-24 rounded-full border-4 border-gray-200 object-cover">
 
 

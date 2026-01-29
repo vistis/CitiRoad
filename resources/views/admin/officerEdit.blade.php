@@ -108,7 +108,7 @@
                             @if($officer->profile_picture_path)
                                 <div class="mt-2 flex items-center">
                                     <span class="text-sm text-gray-600 mr-2">Current:</span>
-                                    <img src="{{ asset('storage/' . $officer->profile_picture_path) }}" alt="Current Profile" class="w-16 h-16 rounded-full object-cover">
+                                    <img src="{{ Storage::url($officer->profile_picture_path) }}" alt="Current Profile" class="w-16 h-16 rounded-full object-cover">
                                 </div>
                             @endif
                         </div>

@@ -41,7 +41,7 @@
                     {{-- Profile Picture --}}
                     <div class="flex-shrink-0">
                         @if($admin->profile_picture_path)
-                            <img src="{{ asset('storage/' . $admin->profile_picture_path) }}" alt="Profile Picture" class="profile-picture">
+                            <img src="{{ Storage::url($admin->profile_picture_path) }}" alt="Profile Picture" class="profile-picture">
                         @else
                             <div class="profile-picture bg-gray-300 flex items-center justify-center text-gray-600 text-6xl">
                                 <i class="fas fa-user-circle"></i>
