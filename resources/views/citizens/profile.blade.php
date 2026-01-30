@@ -34,15 +34,15 @@
 
   <!-- Profile Container -->
   <div class="max-w-5xl mx-auto mt-10 bg-white rounded-2xl shadow-md p-8">
-    
+
     <!-- Profile Header -->
     <div class="flex flex-col md:flex-row md:justify-between items-start md:items-center mb-8">
       <div class="flex items-center gap-4">
-        <img src="{{ asset('storage/' . $citizen->profile_picture_path) }}" alt="Profile Picture" class="w-20 h-20 rounded-full object-cover border-4 border-blue-100 shadow-sm"/>
+        <img src="{{ Storage::url($citizen->profile_picture_path) }}" alt="Profile Picture" class="w-20 h-20 rounded-full object-cover border-4 border-blue-100 shadow-sm"/>
         <div>
           <h2 class="text-2xl font-bold text-gray-900">{{ $citizen->first_name }} {{ $citizen->last_name }}</h2>
           <p class="mt-1 text-sm text-gray-600">
-            Status: 
+            Status:
             <span id="citizen-status" data-status="{{ $citizen->status }}" class="text-xs font-medium rounded px-2 py-1 inline-block">
               {{ $citizen->status }}
             </span>

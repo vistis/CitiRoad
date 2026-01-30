@@ -18,7 +18,7 @@
 
     <!-- Profile Header -->
     <section class="mt-6 flex items-center gap-6">
-      <img src="{{ asset('storage/' . $citizen->profile_picture_path) }}" alt="Profile Picture" class="w-20 h-20 rounded-full object-cover border-4 border-blue-100 shadow-sm"/>
+      <img src="{{ Storage::url($citizen->profile_picture_path) }}" alt="Profile Picture" class="w-20 h-20 rounded-full object-cover border-4 border-blue-100 shadow-sm"/>
       <div>
         <h1 class="text-3xl font-bold tracking-tight">{{$citizen->first_name}} {{$citizen->last_name}}</h1>
         <span class="mt-2 inline-block text-sm font-semibold px-3 py-1 rounded-lg shadow" id="citizen-status" data-status="{{ $citizen->status }}">

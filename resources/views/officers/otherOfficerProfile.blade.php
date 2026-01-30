@@ -23,7 +23,7 @@
         <div class="flex items-center gap-6">
           <div class="w-24 h-24 rounded-full overflow-hidden bg-gray-300 shadow-lg">
             <img
-              src="{{ asset('storage/' . $officer->profile_picture_path) }}"
+              src="{{ Storage::url($officer->profile_picture_path) }}"
               alt="{{ $officer->first_name }}'s Profile Picture"
               class="object-cover w-full h-full"
             />
