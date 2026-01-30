@@ -4,9 +4,10 @@ use App\Http\Controllers\Api\TokenController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 // Base URL
-// http://localhost:8000/api
+// {APP_URL}/api
 
 //** PUBLIC ROUTES */
 // API Health
@@ -31,6 +32,9 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/user', function (Request $request) {
         // Get user information
         $response = $request->user();
+
+        // Generate image link
+        $response->profile_picture_path = Storage::url($response->profile_picture_path);
 
         // Resolve province name
         if ($response->province_id){
@@ -69,12 +73,26 @@ Route::middleware('auth:sanctum')->group(function() {
 
         $response = app('App\Http\Controllers\ReportController')->readAll($request);
 
+        if ($response['code'] != 403) {
+            // Generate image link
+            foreach ($response['reports'] as $report) {
+                $report->image_path = Storage::url($report->image_path);
+            }
+        }
+
         return response()->json($response, $response['code']);
     });
 
     // View specific report
     Route::get('/report', function(Request $request) {
         $response = app('App\Http\Controllers\ReportController')->readOne($request);
+
+        if ($response['code'] != 403) {
+            // Generate image link
+            foreach ($response['images'] as $image) {
+                $image->image_path = Storage::url($image->image_path);
+            }
+        }
 
         return response()->json($response, $response['code']);
     });
@@ -90,25 +108,47 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/citizen', function(Request $request) {
         $citizen = app('App\Http\Controllers\CitizenController')->readOne($request);
 
-        if (!DB::table('reports')->where('citizen_id', $citizen['account']->id)->exists()) {
-            $response = ['account' => $citizen['account']];
+        if ($citizen['code'] != 403) {
+            // Generate image link
+            $citizen['account']->profile_picture_path = Storage::url($citizen['account']->profile_picture_path);
+
+            if (!DB::table('reports')->where('citizen_id', $citizen['account']->id)->exists()) {
+                $response = ['account' => $citizen['account']];
+            }
+            else {
+                $reports = app('App\Http\Controllers\ReportController')->readAll($request);
+
+                // Generate image link
+                foreach ($reports['reports'] as $report) {
+                    $report->image_path = Storage::url($report->image_path);
+                }
+
+                $response = [
+                    'account' => $citizen['account'],
+                    'report-count' => $reports['count'],
+                    'reports' => $reports['reports']
+                ];
+            }
         }
 
         else {
-            $reports = app('App\Http\Controllers\ReportController')->readAll($request);
             $response = [
-                'account' => $citizen['account'],
-                'report-count' => $reports['count'],
-                'reports' => $reports['reports']
+                'message' => "Unauthorized",
+                'code' => 403
             ];
         }
 
-        return response()->json($response, 200);
+        return response()->json($response, $citizen['code']);
     });
 
     // View an officer's information
     Route::get('/officer', function(Request $request) {
         $response = app('App\Http\Controllers\OfficerController')->readOne($request);
+
+        if ($response['code'] != 403) {
+            // Generate image link
+            $response['account']->profile_picture_path = Storage::url($response['account']->profile_picture_path);
+        }
 
         return response()->json($response, $response['code']);
     });
@@ -116,6 +156,13 @@ Route::middleware('auth:sanctum')->group(function() {
     // Officer list
     Route::get('/officers', function(Request $request) {
         $response = app('App\Http\Controllers\OfficerController')->readAll($request);
+
+        // Generate image link
+        if ($response['code'] != 403) {
+            foreach ($response['officers'] as $officer) {
+                $officer->profile_picture_path = Storage::url($officer->profile_picture_path);
+            }
+        }
 
         return response()->json($response, $response['code']);
     });
@@ -230,6 +277,14 @@ Route::middleware('auth:admin-api')->group(function() {
     Route::get('/citizens', function(Request $request) {
         $response = app('App\Http\Controllers\CitizenController')->readAll($request);
 
+        // Generate image link
+        foreach ($response['pending'] as $pending) {
+            $pending->profile_picture_path = Storage::url($pending->profile_picture_path);
+        }
+        foreach ($response['other'] as $other) {
+            $other->profile_picture_path = Storage::url($other->profile_picture_path);
+        }
+
         return response()->json($response, $response['code']);
     });
 
@@ -265,6 +320,9 @@ Route::middleware('auth:admin-api')->group(function() {
     Route::post('/officer/issue', function(Request $request) {
         $response = app('App\Http\Controllers\OfficerController')->create($request);
 
+        // Generate image link
+        $response['account']->profile_picture_path = Storage::url($response['account']->profile_picture_path);
+
         return response()->json($response, $response['code']);
     });
 
@@ -293,12 +351,20 @@ Route::middleware('auth:admin-api')->group(function() {
     Route::get('/admin', function(Request $request) {
         $response = app('App\Http\Controllers\AdminController')->readOne($request);
 
+        // Generate image link
+        $response['account']->profile_picture_path = Storage::url($response['account']->profile_picture_path);
+
         return response()->json($response, $response['code']);
     });
 
     // Admin list
     Route::get('/admins', function(Request $request) {
         $response = app('App\Http\Controllers\AdminController')->readAll($request);
+
+        // Generate image link
+        foreach ($response['admins'] as $admin) {
+            $admin->profile_picture_path = Storage::url($admin->profile_picture_path);
+        }
 
         return response()->json($response, $response['code']);
     });

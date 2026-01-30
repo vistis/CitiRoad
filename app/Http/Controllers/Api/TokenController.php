@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Citizen;
 use App\Models\Officer;
 use App\Models\Admin;
@@ -21,6 +22,9 @@ class TokenController extends Controller
         $response = app('App\Http\Controllers\CitizenController')->create($request);
 
         $citizen = $response['account'];
+
+        // Generate image link
+        $response['account']->profile_picture_path = Storage::url($response['account']->profile_picture_path);
 
         // Resolve province name
         $citizen->province_name = DB::table('provinces')->where('id', $citizen->province_id)->first()->name;
@@ -42,6 +46,9 @@ class TokenController extends Controller
 
         $officer = $response['account'];
 
+        // Generate image link
+        $response['account']->profile_picture_path = Storage::url($response['account']->profile_picture_path);
+
         // Resolve province name
         $officer->province_name = DB::table('provinces')->where('id', $officer->province_id)->first()->name;
 
@@ -59,6 +66,9 @@ class TokenController extends Controller
     public function createAdmin(Request $request) {
         // Call create function
         $admin = app('App\Http\Controllers\AdminController')->create($request);
+
+        // Generate image link
+        $admin->profile_picture_path = Storage::url($admin->profile_picture_path);
 
         // JSON response
         $response = [
@@ -106,6 +116,9 @@ class TokenController extends Controller
         // Resolve province name
         $citizen->province = DB::table('provinces')->where('id', $citizen->province_id)->first()->name;
 
+        // Generate image link
+        $citizen->profile_picture_path = Storage::url($citizen->profile_picture_path);
+
         // Authentication attempt successful
         $response = [
             'message' => "Logged in as citizen",
@@ -138,6 +151,9 @@ class TokenController extends Controller
         // Resolve province name
         $officer->province = DB::table('provinces')->where('id', $officer->province_id)->first()->name;
 
+        // Generate image link
+        $officer->profile_picture_path = Storage::url($officer->profile_picture_path);
+
         // Authentication attempt successful
         $response = [
             'message' => "Logged in as officer",
@@ -166,6 +182,9 @@ class TokenController extends Controller
                 // Failed to authenticate
             return response()->json(['message' => "The provided credentials are incorrect"], 401);
         }
+
+        // Generate image link
+        $admin->profile_picture_path = Storage::url($admin->profile_picture_path);
 
         // Authentication attempt successful
         $response = [
